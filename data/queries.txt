@@ -1,0 +1,3 @@
+Cube with side dimension 10mm.
+Ball with radius of 75mm.
+Airplane wing using NACA 0010 airfoil.
