@@ -52,22 +52,22 @@ def gui_sequence(macro_code_path, img_path):
     logging.info('Opened FreeCAD software')
     time.sleep(8)
     pyautogui.hotkey('ctrl', 'o') #open the macro generated
-    time.sleep(.2)
-    pyautogui.typewrite(f'{macro_code_path}')
-    time.sleep(.1)
+    time.sleep(3)
+    pyautogui.write(macro_code_path, interval=0.08)
+    time.sleep(3)
     pyautogui.press('enter')
     logging.info('Opened the macros')
-    time.sleep(.1)
-    pyautogui.moveTo(622, 75)
+    time.sleep(1)
+    #pyautogui.moveTo(622, 75)
     pyautogui.hotkey('ctrl', 'f6')#run the macro
     '''time.sleep(2)
     pyautogui.leftClick()'''
-    time.sleep(.1)
+    time.sleep(2)
     
     pyautogui.hotkey('v', 'f')
-    time.sleep(.1)
+    time.sleep(1)
     pyautogui.hotkey('0')#orient the CAD model in isometric view
-    time.sleep(.1)
+    time.sleep(1)
     screenshot = pyautogui.screenshot(region=(543, 147, 1050, 675))
     screenshot.save(img_path)
 
@@ -81,7 +81,16 @@ def gui_sequence(macro_code_path, img_path):
     error_msg = pyperclip.paste() #if no error returns an empty string.
     time.sleep(2)
     pyautogui.hotkey('alt', 'f4')
-    time.sleep(1) 
+    time.sleep(1)
+    pyautogui.press('left')
+    pyautogui.press('left')
+    pyautogui.press('enter') 
+
+    if error_msg == "":
+        error_msg = None
+    else:
+        error_msg = error_msg
+
     return error_msg
 
 def get_executable_code(gen_code, error, error_iter, model, api_key, temp, query_idx, direct_code=False, refined_code=False, refined_idx = 0):
@@ -130,7 +139,8 @@ def get_vqa_score(img_path, user_query, model):
     Reference: https://github.com/linzhiqiu/t2v_metrics
     """
 
-    score = model(images = [img_path], texts = [user_query])
+    text = f"This image shows a CAD model of {user_query}"
+    score = model(images = [img_path], texts = [text])
     return score.item()
 
 def get_captions(img_path, processor, model):
