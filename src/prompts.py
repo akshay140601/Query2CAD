@@ -1,5 +1,5 @@
 def few_shot_examples():
-    few_shot_examples = """
+    few_shot_example = """
 ### [User message]
 Make the CAD design of a pentagon box (hollow from inside)
 
@@ -196,11 +196,11 @@ extr = face.extrude(FreeCAD.Vector(0,0,10))
 Part.show(extr)
 ```
 """
-    return few_shot_examples
+    return few_shot_example
 
 def get_code_prompt(user_query, steps):
     
-    few_shot_examples = few_shot_examples()
+    few_shot_example = few_shot_examples()
     prompt = f"""
 
 ### Instructions ###
@@ -225,7 +225,7 @@ Use the following functions to make simple solids:
 
 These are a few example codes you can take reference from:
 ### Examples ###
-{few_shot_examples}
+{few_shot_example}
 
 ### [User message]
 Steps to follow while writing the code are given below: 
@@ -244,26 +244,9 @@ def get_steps_prompt(user_query):
 You are a Computer Aided Design Engineer with a lot of industry experience. You are proficient in mechanical engineering concepts and you know the detailed steps to design any object. You have been using FreeCAD software for designing the CAD models.
 
 ### Task ###
-The user asked to {user_query}. Your task is to write down the steps you would follow to make the make what the user asked. Write it in an ordered list. Use the examples shown below as reference.
+The user asked to {user_query}. Your task is to write down the steps you would follow to make the make what the user asked. Before writing the steps I want you think about how the 3D model of what the user asked would look like. Write it in an ordered list. 
 
-### Examples ###
 ### [User message]
-what is step by step approach that needs to be followed to design a pot
-
-### [Answer]
-1. Create a new document.
-2. Create the 2D profile of the pot's cross-section. 
-3. Extrude the 2D sketch to create a 3D solid representing the main body of the pot
-
-### [User Message] 
-what is the step by step approach to make a cad design of a knob
-
-### [Answer]
-1. Create a new document
-2. Make a 3D model of sphere using makeSphere function of FreeCAD
-3. Now you need to cut out a cylinder from the sphere, to place the handle. So remove the intersection of the Sphere and the cylinder made.
-
-### [User Message]
 What is the step by step approach to make a CAD design of {user_query}
 
 ### [Answer]
@@ -344,5 +327,28 @@ On executing this code the CAD model generated resembles {feedback}, whereas I w
 ### [Answer]
 ```python
     """
+
+    return prompt
+
+def get_vqa_prompt(user_query):
+    prompt = f"""
+### Instruction ###
+Your task is to tell what the user has been designing. Strictly follow the examples given below. 
+
+### Examples ###
+### [User message]
+A cylinder of radius 20 millimeters and height 30 millimeters
+### [Answer]
+A cylinder
+
+### [User message]
+A rectangle with 10 millimeters as the length of shorter side and 20 millimeters as the length of longer side.
+### [Answer]
+A rectangle
+
+### [User message]
+{user_query}
+### [Answer]
+"""
 
     return prompt
