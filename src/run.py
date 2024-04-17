@@ -2,20 +2,25 @@ import os, sys, requests, argparse
 import torch
 import t2v_metrics
 from transformers import Blip2Processor, Blip2ForConditionalGeneration
+from dotenv import load_dotenv
 from utils import *
 from prompts import *
 from llm import *
 
 def get_3d(code_model, reasoning_model, error_iter, refine_iter, code_temp, reasoning_temp, 
-           code_api_key, reasoning_api_key, mode, vqa_model, vqa_threshold):
+           code_api_key, reasoning_api_key, mode, vqa_model, vqa_threshold, base_url):
     
     DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
     # Load the Captions and VQA model initially to avoid loading it repeatedly
 
     processor = Blip2Processor.from_pretrained("Salesforce/blip2-flan-t5-xxl")
-    model = Blip2ForConditionalGeneration.from_pretrained("Salesforce/blip2-flan-t5-xxl", torch_dtype=torch.float16)
+    model = Blip2ForConditionalGeneration.from_pretrained("Salesforce/blip2-flan-t5-xxl")
+
+    print('Loaded')
     
     vqa = t2v_metrics.VQAScore(model=vqa_model, device=DEVICE)
+
+    print('Loaded vqa')
 
     if mode == "dataset":
         dataset_queries = get_queries('data/queries.txt')
@@ -29,22 +34,22 @@ def get_3d(code_model, reasoning_model, error_iter, refine_iter, code_temp, reas
         print(f"Starting query number {idx}...")
         # Get direct response
         direct_steps_prompt = get_steps_prompt(query)
-        direct_steps = get_answers(reasoning_model, reasoning_api_key, direct_steps_prompt, reasoning_temp)
+        direct_steps = get_answers(reasoning_model, reasoning_api_key, direct_steps_prompt, reasoning_temp, base_url)
         direct_code_prompt = get_code_prompt(query, direct_steps)
-        direct_code = get_answers(code_model, code_api_key, direct_code_prompt, code_temp)
+        direct_code = get_answers(code_model, code_api_key, direct_code_prompt, code_temp, base_url)
         direct_code = remove_backticks(direct_code)
         direct_code_macro_file_path = f"{macro_store_path}/query_{idx}_direct_attempt_0.FCMacro"
         write_macro(direct_code, direct_code_macro_file_path)
 
         # PyAutoGUI sequence
-        img_path = f"results/code/query_{idx}_direct_attempt_0.png"
+        img_path = f"results/images/query_{idx}_direct_attempt_0.png"
         error_msg = gui_sequence(direct_code_macro_file_path, img_path)
 
         # Get an executable code
         if error_msg is not None:
             error, success_idx, new_code = get_executable_code(direct_code, error_msg, error_iter, code_model, code_api_key, code_temp, idx, direct_code=True)
             if error is None:
-                img_path_for_captions = f"results/code/query_{idx}_direct_attempt_{success_idx}.png"
+                img_path_for_captions = f"results/images/query_{idx}_direct_attempt_{success_idx}.png"
                 code_for_refinement = new_code
             else:
                 print("Could not get an executable code for this query... Skipping to next query")
@@ -55,7 +60,10 @@ def get_3d(code_model, reasoning_model, error_iter, refine_iter, code_temp, reas
             code_for_refinement = direct_code
 
         # VQA score check
-        vqa_score = get_vqa_score(img_path_for_captions, query, vqa)
+        prompt_for_vqa = get_vqa_prompt(query)
+        query_for_vqa = get_answers(reasoning_model, reasoning_api_key, prompt_for_vqa, reasoning_temp, base_url)
+        vqa_score = get_vqa_score(img_path_for_captions, query_for_vqa, vqa)
+        print(vqa_score)
 
         # Refine if VQA score check is not passed
         if vqa_score < vqa_threshold:
@@ -66,7 +74,7 @@ def get_3d(code_model, reasoning_model, error_iter, refine_iter, code_temp, reas
 
             # Get the best possible code
             get_refined_outputs(caption, query, code_for_refinement, refine_iter, code_model, code_api_key, code_temp, idx, 
-                                error_iter, vqa, vqa_threshold, processor, model)
+                                error_iter, vqa, vqa_threshold, processor, model, base_url)
             
         else:
             print("Stopping criteria is reached with direct model output. No need of refinement...")
@@ -89,5 +97,28 @@ if __name__ == "__main__":
 
     args = args.parse_args()
 
-    get_3d(args.model, args.error_iterations, args.refine_iterations, args.code_gen_temperature, args.reasoning_temperature, 
-           args.code_gen_api_key, args.reasoning_api_key, args.mode, args.vqa_model, args.vqa_threshold)
+    if args.code_gen_model != "codellama":
+        load_dotenv()
+        api_key = os.getenv("PROXY_API_KEY")
+        base_url = os.getenv("PROXY_BASE_URL")
+
+        args.code_gen_api_key = api_key
+
+    else:
+        args.code_gen_api_key = args.code_gen_api_key
+        base_url = None
+
+    if args.reasoning_model != "codellama":
+        load_dotenv()
+        api_key = os.getenv("PROXY_API_KEY")
+        base_url = os.getenv("PROXY_BASE_URL")
+
+        args.reasoning_api_key = api_key
+
+    else:
+        args.reasoning_api_key = args.reasoning_api_key
+        base_url = None
+        
+
+    get_3d(args.code_gen_model, args.reasoning_model, args.error_iterations, args.refine_iterations, args.code_gen_temperature, args.reasoning_temperature, 
+           args.code_gen_api_key, args.reasoning_api_key, args.mode, args.vqa_model, args.vqa_threshold, base_url)
