@@ -1,3 +1,64 @@
 Cube with side dimension 10mm.
 Ball with radius of 75mm.
+Cone with base radius 10 mm and height 10 mm 
+Cylinder with base radius 10 mm and height 20 mm
+A plate which is circular in shape with radius 6 mm and thickness 2 mm
+A pyramid with a square base of 20mm sides and height of 30mm.
+A rectangular block with dimensions 40mm by 20mm by 10mm.
+A hexagonal prism with a side length of 15mm and height of 30mm.
+A tetrahedron with edge lengths of 20 mm.
+A trapezoidal plate with a height of 10 mm, bottom base of 30mm, top base of 20mm, and thickness of 5mm.
+A hexagon with side lengths of 5 mm and a thickness of 2mm.
+A semi-circular disc with radius of 25mm and thickness of 5mm.
+An octagonal column with side length of 5mm and height of 40mm.
+A triangular pyramid with base sides of 15mm and height of 20mm.
+A diamond shape plate with diagonal lengths of 20mm and 10mm, and thickness of 3mm.
+A bottle cap with base radius of 20mm and height of 10mm.
+A cylinder with a diameter of 20mm and a height of 100mm.
+A shaft with inner diameter of 50mm, outer diameter of 80mm and height of 100mm.
+A triangular prism with base sides of 25mm, and a length of 50mm.
+A torus with inner hole radius of 50mm and outer radius with 20mm.
+A hollow cylinder with an outer diameter of 50mm, an inner diameter of 45mm, and a height of 75mm.
+A hollow cuboid with length 10 mm, breadth 5 mm and height 2 mm and that is open from one side.
+An elliptical plate with the major axis of 50mm and the minor axis of 30mm with a thickness of 5mm
+A cylinder with radius 20 mm and height 5 mm and has a square hole at the center.
+A cube of 20mm with a cylindrical hole of a radius of 5mm centered on the top face.
+Two intersecting cylinders, each with radius 15mm and height 40mm, aligned along perpendicular axes.
+A rectangular plate of 50mm by 30mm by 5mm with a circular hole of radius 10mm at the center.
+A solid sphere of radius 15mm with three small cylindrical pegs (5mm radius, 10mm height) emerging equidistant on the surface.
+A flat ring with outer radius of 25mm, inner radius of 15mm, with three evenly spaced square holes on the ring, each side of the square being 3mm.
+A pair of parallel plates of 40mm square and 3mm thick, separated by a 10mm gap.
+A solid cone with base radius 15mm and height 20mm, with a conical indentation from the top creating a hollow center.
+A combination of a cube and a pyramid, with a cube base of 15mm and a pyramid height of 25mm centered on the top face of the cube.
+A combined sphere and cube, with the sphere having a radius of 25mm and the cube having 50mm sides, fused at one face.
+A H-shaped beam with a height of 100mm, arm lengths of 50mm each, and a thickness of 10mm.
+A hexagonal nut with an outer diameter of 20mm and a height of 10mm, with a hexagonal through hole of 10mm.
+A rectangular block of 100mm by 50mm by 50mm with a separate cylindrical roller of 100mm length and 20mm diameter lying parallel on top.
+A screw with a radius of 2mm and length of 10mm. 
+A 90-degree bent pipe with outer diameter of 50mm and inner diameter of 30mm.
+A solid shaft with diameter 80mm with a keyway slot
+A flange with outer diameter 20mm and inner diameter 10.
+A ballpoint pen with a nib.
 Airplane wing using NACA 0010 airfoil.
+A plate which is similar to the shape of a star that has a side length of 5 mm and thickness 2 mm.
+A crescent moon shape with max radius of 15mm and thickness of 2mm.
+A bottle with a base diameter of 50mm and height of 100mm.
+A simple two-blade ceiling fan design with each blade being 500mm long and a central hub of 150mm diameter.
+A rowing boat hull shape that is slender and slightly curved, 2000mm in length with a flat section for seating.
+A pair of glasses with each lens shaped as an oval of dimension 50mm by 30mm, and separate arms, each 150mm long.
+A four legged circular table with radius 30 mm and thickness 2mm.
+A ladder with 20 steps.
+A basketball hoop with a rim diameter of 450mm and a backboard measuring 1800mm by 1050mm.
+An office desk of 1400mm in width, 700mm in depth, and a thickness of 25mm, with a separate three-drawer pedestal of 400mm width, 600mm depth, and 700mm height.
+A snowboard of 1500mm in length and 250mm in width, with a separate set of bindings with a base of 150mm by 150mm.
+A street lamp with a pole height of 3000mm and a diameter of 150mm
+A teapot with a body diameter of 150mm and height of 100mm, accompanied by a separate lid with a diameter of 100mm.
+A football goal post with a width of 7300mm and a height of 2400mm.
+A bookshelf with five shelves, each 800mm long and 300mm deep
+A bucket along with a handle with an outer diameter of 500mm and inner diameter of 450mm.
+A fidget spinner with three arms.
+A screw with a radius of 2mm and length of 10mm with knurling.
+A detailed laptop consisting of a screen, keyboard, touchpad and hinges.
+A standard calculator.
+A gear with 24 teeth, an outer diameter of 60mm, and a central hole of 15mm diameter, each tooth having a height of 5mm.
+A triangular prism of side 25mm and height 30mm with a cylindrical cutout from one vertex to the opposite base edge.
