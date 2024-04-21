@@ -6,15 +6,16 @@ from dotenv import load_dotenv
 from utils import *
 from prompts import *
 from llm import *
+from gui_run import get_mouse_coordinates
 
 def get_3d(code_model, reasoning_model, error_iter, refine_iter, code_temp, reasoning_temp, 
-           code_api_key, reasoning_api_key, mode, vqa_model, vqa_threshold, base_url):
+           code_api_key, reasoning_api_key, mode, vqa_model, vqa_threshold, human_feedback, base_url):
     
     DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
     # Load the Captions and VQA model initially to avoid loading it repeatedly
 
     processor = Blip2Processor.from_pretrained("Salesforce/blip2-flan-t5-xxl")
-    model = Blip2ForConditionalGeneration.from_pretrained("Salesforce/blip2-flan-t5-xxl")
+    model = Blip2ForConditionalGeneration.from_pretrained("Salesforce/blip2-flan-t5-xxl", load_in_8bit = True)
 
     print('Loaded')
     
@@ -40,6 +41,7 @@ def get_3d(code_model, reasoning_model, error_iter, refine_iter, code_temp, reas
         direct_code = remove_backticks(direct_code)
         direct_code_macro_file_path = f"{macro_store_path}/query_{idx}_direct_attempt_0.FCMacro"
         write_macro(direct_code, direct_code_macro_file_path)
+        #get_mouse_coordinates()
 
         # PyAutoGUI sequence
         img_path = f"results/images/query_{idx}_direct_attempt_0.png"
@@ -47,7 +49,7 @@ def get_3d(code_model, reasoning_model, error_iter, refine_iter, code_temp, reas
 
         # Get an executable code
         if error_msg is not None:
-            error, success_idx, new_code = get_executable_code(direct_code, error_msg, error_iter, code_model, code_api_key, code_temp, idx, direct_code=True)
+            error, success_idx, new_code = get_executable_code(direct_code, error_msg, error_iter, code_model, code_api_key, code_temp, idx, base_url, direct_code=True)
             if error is None:
                 img_path_for_captions = f"results/images/query_{idx}_direct_attempt_{success_idx}.png"
                 code_for_refinement = new_code
@@ -65,16 +67,25 @@ def get_3d(code_model, reasoning_model, error_iter, refine_iter, code_temp, reas
         vqa_score = get_vqa_score(img_path_for_captions, query_for_vqa, vqa)
         print(vqa_score)
 
+        if human_feedback != False:
+            fp = input("Is the output correct but VQA score made a mistake? (y/n): ")
+
+            if fp == 'y' or fp == 'Y':
+                vqa_score = 0
+
+            elif fp == 'n' or fp == 'N':
+                vqa_score = vqa_score
+
         # Refine if VQA score check is not passed
         if vqa_score < vqa_threshold:
             print("Directly generated code is not correct... Beginning refinement...")
             # Get captions
 
-            caption = get_captions(img_path_for_captions, processor, model)
+            caption = get_captions(img_path_for_captions, processor, model, human_feedback)
 
             # Get the best possible code
             get_refined_outputs(caption, query, code_for_refinement, refine_iter, code_model, code_api_key, code_temp, idx, 
-                                error_iter, vqa, vqa_threshold, processor, model, base_url)
+                                error_iter, vqa, vqa_threshold, processor, model, base_url, human_feedback)
             
         else:
             print("Stopping criteria is reached with direct model output. No need of refinement...")
@@ -94,6 +105,7 @@ if __name__ == "__main__":
     args.add_argument("--mode", type=str, help="Inferencing on dataset or single inference (dataset or single)", default="dataset")
     args.add_argument("--vqa_model", type=str, default="clip-flant5-xl")
     args.add_argument("--vqa_threshold", type=float, help="Between 0 and 1", default=0.9)
+    args.add_argument("--human_feedback", type=str, default=False)
 
     args = args.parse_args()
 
@@ -121,4 +133,4 @@ if __name__ == "__main__":
         
 
     get_3d(args.code_gen_model, args.reasoning_model, args.error_iterations, args.refine_iterations, args.code_gen_temperature, args.reasoning_temperature, 
-           args.code_gen_api_key, args.reasoning_api_key, args.mode, args.vqa_model, args.vqa_threshold, base_url)
+           args.code_gen_api_key, args.reasoning_api_key, args.mode, args.vqa_model, args.vqa_threshold, args.human_feedback, base_url)
