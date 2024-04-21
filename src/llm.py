@@ -10,9 +10,8 @@ def get_answers(model, api_key, query, temp, base_url = None) -> str:
     Model Used: CodeLlama 70b
     """
 
-    os.environ["TOGETHER_API_KEY"] = api_key
-
     if model == "codellama":
+        os.environ["TOGETHER_API_KEY"] = api_key
         url = 'https://api.together.xyz/inference'
         headers = {
         'Authorization': 'Bearer ' + os.environ["TOGETHER_API_KEY"],
@@ -22,7 +21,7 @@ def get_answers(model, api_key, query, temp, base_url = None) -> str:
         data = {
         "model": "codellama/CodeLlama-70b-hf",
         "prompt": query,
-        "max_tokens": 1500,
+        "max_tokens": 3000,
         "temperature": temp,
         "top_p": 0.7,
         "top_k": 50,
@@ -44,11 +43,13 @@ def get_answers(model, api_key, query, temp, base_url = None) -> str:
             'content' : query
         }
         response = client.chat.completions.create(
-            model=model,
+            model="gpt-3.5-turbo",
             messages=[message],
             stop=["<END>", "### [User message]", "\n\n\n\n\n"],
-            temperature=temp
+            temperature=temp,
+            max_tokens=3000
         )
         output = response.choices[0].message.content
+        print(output)
 
         return output
