@@ -34,8 +34,13 @@ def remove_backticks(text):
     matches = re.finditer(pattern, text)
     position = [m.start() for m in matches] #get the location of ```
     start_position = 0
-    end_position = position[0]
-    code = text[start_position:end_position].strip()
+
+    try:
+        end_position = position[0]
+        code = text[start_position:end_position].strip()
+    
+    except:
+        code = text
 
     return code
 
@@ -44,6 +49,7 @@ def gui_sequence(macro_code_path, img_path):
     Runs the entire sequence -- opening FreeCAD, running generated code, capturing the isometric image,
     returning the error code if there is any.
     """
+    
     pyautogui.hotkey('win') #Open Run in windows
     time.sleep(.5)
     pyautogui.typewrite('FreeCAD')  
@@ -80,11 +86,19 @@ def gui_sequence(macro_code_path, img_path):
 
     error_msg = pyperclip.paste() #if no error returns an empty string.
     time.sleep(2)
-    pyautogui.hotkey('alt', 'f4')
+    '''pyautogui.hotkey('alt', 'f4')
     time.sleep(1)
     pyautogui.press('left')
     pyautogui.press('left')
-    pyautogui.press('enter') 
+    pyautogui.press('left')
+    pyautogui.press('left')
+    pyautogui.press('left')
+    pyautogui.press('enter') '''
+    pyautogui.hotkey('ctrl', 'alt', 't')
+    time.sleep(0.8)
+    pyautogui.write("pkill freecad", interval=0.08)
+    pyautogui.press("enter")
+    pyautogui.hotkey('alt', 'f4')
 
     if error_msg == "":
         error_msg = None
@@ -143,7 +157,7 @@ def get_vqa_score(img_path, user_query, model):
     score = model(images = [img_path], texts = [text])
     return score.item()
 
-def get_captions(img_path, processor, model):
+def get_captions(img_path, processor, model, human_feedback):
     """
     Gets the caption of the image
     """
@@ -151,22 +165,47 @@ def get_captions(img_path, processor, model):
     raw_img = Image.open(img_path).convert('RGB')
 
     # Conditional captioning
-    text = "This image shows the CAD model of a "
-    inputs = processor(raw_img, text, return_tensors="pt")
+    #text = "This image shows the CAD model of a "
+    #inputs = processor(raw_img, text, return_tensors="pt").to("cuda")
+
+    #question = "The image is a CAD model of an object. Describe the object briefly"
+    inputs = processor(raw_img, return_tensors="pt").to("cuda")
     out = model.generate(**inputs)
 
     caption = processor.decode(out[0], skip_special_tokens = True)
 
+    print('System generated caption: ', caption)
+
+    if human_feedback != False:
+        proceed = input("Do you want to proceed with the system generated caption? Type fp for vqa score false negative (y/n/fn): ")
+  
+        if proceed == 'y' or proceed == 'Y':
+            caption = caption
+
+        elif proceed == 'n' or proceed == 'N':
+            caption = input("Please enter the feedback: ")
+
+        elif proceed == 'fn' or proceed == 'FN':
+            caption = proceed
+
+    else:
+        caption = caption
+
     return caption
 
 def get_refined_outputs(captions, user_query, prev_code, refine_iter, model, api_key, temp, 
-                        query_idx, error_iter, vqa_model, vqa_thresh, processor, caption_model, base_url):
+                        query_idx, error_iter, vqa_model, vqa_thresh, processor, caption_model, base_url, human_feedback):
     """
     Performs iterative refinement and gets the best possible output for a given user query
     """
 
     refined_code = prev_code
     for i in range(refine_iter):
+        print('Final Caption: ', captions)
+        if captions == 'fn' or captions == 'FN':
+            print('Stopping the refinements as asked by user... Moving to next query')
+            break
+
         feedback_reason_prompt = get_feedback_reason_prompt(captions, user_query, refined_code)
         refined_code = get_answers(model, api_key, feedback_reason_prompt, temp, base_url)
         refined_code = remove_backticks(refined_code)
@@ -175,8 +214,9 @@ def get_refined_outputs(captions, user_query, prev_code, refine_iter, model, api
         # GUI sequence
         img_path = f"results/images/query_{query_idx}_refined_{i}_attempt_0.png"
         error_msg = gui_sequence(macro_path, img_path)
+        print('error_msg', error_msg)
         if error_msg is not None:
-            error, success_idx = get_executable_code(refined_code, error_msg, error_iter, model, api_key, temp, query_idx, base_url, refined_code=True, refined_idx=i)
+            error, success_idx, refined_code = get_executable_code(refined_code, error_msg, error_iter, model, api_key, temp, query_idx, base_url, refined_code=True, refined_idx=i)
             if error is None:
                 img_path_for_captions = f"results/images/query_{query_idx}_refined_{i}_attempt_{success_idx}.png"
             else:
@@ -192,7 +232,7 @@ def get_refined_outputs(captions, user_query, prev_code, refine_iter, model, api
 
         if vqa_score < vqa_thresh and i != refine_iter - 1:
             print("Doing another round of refinement...")
-            captions = get_captions(img_path_for_captions, processor, caption_model)
+            captions = get_captions(img_path_for_captions, processor, caption_model, human_feedback)
 
         elif vqa_score < vqa_thresh and i == refine_iter - 1:
             print("Could not refine enough to cross the VQA threshold that was set within the defined refinement iterations...")
