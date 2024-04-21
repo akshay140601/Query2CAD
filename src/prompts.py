@@ -1,7 +1,7 @@
 def few_shot_examples():
     few_shot_example = """
 ### [User message]
-Make the CAD design of a pentagon box (hollow from inside)
+Make the CAD design of a pentagon box (open from one face)
 
 ### [Answer]
 ```python
@@ -32,6 +32,45 @@ App.activeDocument().recompute()
 Gui.activeDocument().activeView().viewAxometric()
 Gui.SendMsgToActiveView("ViewFit")
 ```
+
+### [User message]
+Make a CAD design of a column that is in the shape of a pentagon with side length 30mm and height 20 mm.
+
+### [Answer]
+from FreeCAD import Base
+
+side_length = 30.0  # Length of each side of the pentagon
+height = 20.0  # Height of the pentagon box
+
+App.newDocument("PentagonBox")
+App.setActiveDocument("PentagonBox")
+App.ActiveDocument = App.getDocument("PentagonBox")
+Gui.ActiveDocument = Gui.getDocument("PentagonBox")
+
+pentagon_points = []  # List to hold the points of the pentagon
+angle = 360 / 5  # Angle between each vertex of the pentagon
+
+# Calculate the points of the pentagon
+for i in range(5):
+    x = side_length * math.cos(math.radians(i * angle))
+    y = side_length * math.sin(math.radians(i * angle))
+    pentagon_points.append(Base.Vector(x, y, 0))
+
+pentagon_points.append(pentagon_points[0])  # Close the sketch.
+
+# Create the pentagon wire
+pentagon_wire = Part.makePolygon(pentagon_points)
+pentagon_face = Part.Face(pentagon_wire)
+
+# Extrude the pentagon face to create a solid
+pentagon_solid = pentagon_face.extrude(Base.Vector(0, 0, height))
+
+# Show the solid
+Part.show(pentagon_solid)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")
+
 
 ### [User message]
 Make the CAD design of a ball-bearing
@@ -202,10 +241,9 @@ def get_code_prompt(user_query, steps):
     
     few_shot_example = few_shot_examples()
     prompt = f"""
-
 ### Instructions ###
 You are a Computer Aided Design Engineer with a lot of industrial experience. You are proficient in using the FreeCAD software.
-Your task is to write the corresponding python code for generating what the user asked, using the FreeCAD library to generate the CAD model. Make sure to follow the steps given. 
+Your task is to write the corresponding python code for generating what the user asked, using the FreeCAD library to generate the CAD model. Make sure to follow the steps given. Do not save the code at the end. 
 Use the following functions to make simple solids:
 1. makeBox(length,width,height,[pnt,dir]) #Description: Makes a box located at pnt with the dimensions (length,width,height). By default pnt is Vector(0,0,0) and dir is Vector(0,0,1)
 2. makeCircle(radius,[pnt,dir,angle1,angle2]) #Description: Makes a circle with a given radius. By default pnt is Vector(0,0,0), dir is Vector(0,0,1), angle1 is 0 and angle2 is 360.
@@ -238,16 +276,62 @@ Follow these steps and generate a Python code using the FreeCAD library to make 
     return prompt
 
 def get_steps_prompt(user_query):
-    
     steps_prompt = f"""
 ### Instructions ###
 You are a Computer Aided Design Engineer with a lot of industry experience. You are proficient in mechanical engineering concepts and you know the detailed steps to design any object. You have been using FreeCAD software for designing the CAD models.
 
 ### Task ###
-The user asked to {user_query}. Your task is to write down the steps you would follow to make the make what the user asked. Before writing the steps I want you think about how the 3D model of what the user asked would look like. Write it in an ordered list. 
+The user asked to {user_query}. Your task is to write down the steps you would follow to make the make what the user asked. Before writing the steps I want you think about how the 3D model of what the user asked would look like. Write it in an ordered list. First, visualize what the user is asking for. Then try designing the model step by step. You can follow the template in the examples given below.
+
+### Examples ###
+### [User message]
+What is the step by step approach to make a CAD design of rectangular prism.
+
+### [Answer]
+Step 1: Create a new document.
+Step 2: Using the Part.makeBox function make a cuboid.
+Step 3: Write Part.show to see the part generated.
 
 ### [User message]
-What is the step by step approach to make a CAD design of {user_query}
+What is the step by step approach to make a CAD design of a knob
+
+### [Answer]
+Step 1: Create a new document
+Step 2: Make a 3D model of sphere using makeSphere function of FreeCAD.
+Step 3: Make a cylinder and cut extrude the intersection of cylinder and the sphere.
+Step 4: Write Part.show to see the part generated.
+
+### [User message]
+What is the step-by-step approach to make a CAD design of a chair?
+
+### [Answer]
+Step 1: Sketch the basic outline of the chair, including the seat, backrest, and legs.
+Step 2: Extrude the sketches to create solid bodies for the seat and backrest.
+Step 3: Create additional sketches for details such as armrests and support structures.
+Step 4: Extrude or revolve these sketches to add the details to the chair.
+
+### [User message]
+What is the step-by-step approach to make a CAD design of a gear?
+
+### [Answer]
+Step 1: Create a new document.
+Step 2: Sketch the profile of the gear tooth using the involute curve.
+Step 3: Create a circular pattern of the tooth profile to form the complete gear.
+Step 4: Extrude the profile to the desired thickness to form the gear.
+Step 5: Add a shaft hole at the center of the gear if necessary.
+
+### [User message]
+What is the step-by-step approach to make a CAD design of a wrench?
+
+###[Answer]
+Step 1: Sketch the outline of the wrench, including the handle and jaws.
+Step 2: Extrude the sketches to create solid bodies for the handle and jaws.
+Step 3: Add details such as knurling or grip patterns to the handle.
+Step 4: Create a separate sketch for the opening of the wrench jaws.
+Step 5: Extrude or revolve the sketch to create the opening.
+
+### [User message]
+What is the step by step approach to make a CAD design of {user_query}.
 
 ### [Answer]
     """
@@ -256,7 +340,7 @@ What is the step by step approach to make a CAD design of {user_query}
 def get_error_prompt(generated_code, error):
 
     error_prompt = f""" You are an intelligent CAD designer who makes CAD designs using FreeCAD library of python. The user will give you the code he executed and the error message he encountered. 
-Your task is to find the error in the code and make the required modifications to it. You can take reference from the examples given below.
+Your task is to find the error in the code and make the required modifications to it. After making the modifications give the entire modified code. You can take reference from the examples given below. 
     
 ### Examples ###
 ### [User message]
@@ -298,8 +382,32 @@ The error I encountered is
     return error_prompt
 
 def get_feedback_reason_prompt(feedback, user_query, code):
+    few_shot_examples_call = few_shot_examples()
     prompt = f"""You are an intelligent CAD designer who makes CAD designs using FreeCAD library of python. The user will give you a code he executed and the information about what design was generated on executing the code and what he wanted to generate.
-Your task is to take into consideration what the user wants and modify the code given below. You can take reference from the examples given below.
+Your task is to take into consideration what the user wants and modify the code given below. After making the modifications give the entire modified code.
+
+You can use the following functions to make simple solids:
+1. makeBox(length,width,height,[pnt,dir]) #Description: Makes a box located at pnt with the dimensions (length,width,height). By default pnt is Vector(0,0,0) and dir is Vector(0,0,1)
+2. makeCircle(radius,[pnt,dir,angle1,angle2]) #Description: Makes a circle with a given radius. By default pnt is Vector(0,0,0), dir is Vector(0,0,1), angle1 is 0 and angle2 is 360.
+3. makeCone(radius1,radius2,height,[pnt,dir,angle]) #Description: Makes a cone with given radii and height. By default pnt is Vector(0,0,0), dir is Vector(0,0,1) and angle is 360
+4. makeCylinder(radius,height,[pnt,dir,angle]) #Description: Makes a cylinder with a given radius and height. By default pnt is Vector(0,0,0),dir is Vector(0,0,1) and angle is 360
+5. makeHelix(pitch,height,radius,[angle,lefthand,heightstyle]) #Description: Makes a helix shape with a given pitch, height and radius. Defaults to right-handed cylindrical helix. Non-zero angle parameter produces a conical helix. Lefthand True produces left handed helix. Heightstyle applies only to conical helices. Heightstyle False (default) will cause the height parameter to be interpreted as the length of the side of the underlying frustum. Heightstyle True will cause the height parameter to be interpreted as the vertical height of the helix. Pitch is "metric pitch" (advance/revolution). For conical helix, radius is the minor radius.
+6. makeLine((x1,y1,z1),(x2,y2,z2)) #Description: Makes a line of two points
+7. makeLoft(shapelist<profiles>,[boolean<solid>,boolean<ruled>]) #Description: Creates a loft shape using the list of profiles. Optionally make result a solid (vs surface/shell) or make result a ruled surface.
+8. makePlane(length,width,[pnt,dir]) #Description: Makes a plane. By default pnt is Vector(0,0,0) and dir is Vector(0,0,1)
+9. makePolygon(list) #Description: Makes a polygon of a list of Vectors
+10. makeRevolution(Curve,[vmin,vmax,angle,pnt,dir]) #Description: Makes a revolved shape by rotating the curve or a portion of it around an axis given by (pnt,dir). By default vmin/vmax are set to bounds of the curve,angle is 360,pnt is Vector(0,0,0) and dir is Vector(0,0,1)
+11. makeShell(list) #Description: Creates a shell out of a list of faces. Note: Resulting shell should be manifold. Non-manifold shells are not well supported.
+12. makeSolid(Part.Shape) #Description: Creates a solid out of the shells inside a shape.
+13. makeSphere(radius,[center_pnt, axis_dir, V_startAngle, V_endAngle, U_angle]) #Description: Makes a sphere (or partial sphere) with a given radius. By default center_pnt is Vector(0,0,0), axis_dir is Vector(0,0,1), V_startAngle is 0, V_endAngle is 90 and U_angle is 360
+14. makeTorus(radius1,radius2,[pnt,dir,angle1,angle2,angle]) #Description: Makes a torus with a given radii and angles. By default pnt is Vector(0,0,0),dir is Vector(0,0,1),angle1 is 0,angle2 is 360 and angle is 360
+15. makeTube(edge,float) #Description: Creates a tube.
+
+Some examples of FreeCAD codes are shown below. You are not restricted to these codes. Use them solely as a reference.
+### Code examples ###
+{few_shot_examples_call}
+
+An example of refinement is shown below.
 
 ### Examples ###
 ### [User message]
@@ -317,12 +425,12 @@ import Part
 cube = Part.makeBox(2,2,2)
 Part.show(cube)
 ```
-### [User Message]
+### [User message]
 I worked on a code with the aim of generating a 3D CAD model of a {user_query}. The code I have written is:
 ```python
 {code}
 ```
-On executing this code the CAD model generated resembles {feedback}, whereas I wanted the CAD model of a {user_query}. Identify the difference between both of them and then modify the code to generate what I actually want.
+On executing this code the CAD model generated resembles {feedback}, whereas I wanted the CAD model of a {user_query}. Identify the difference between both of them and then modify the code to generate what I actually want. 
 
 ### [Answer]
 ```python
