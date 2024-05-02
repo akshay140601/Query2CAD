@@ -365,6 +365,119 @@ Part.show(cuboid)
 ```
 
 ### [User message]
+The code I worked on is
+```python
+import FreeCAD as App
+import Part
+
+# Create a new document
+doc = App.newDocument("MyRectangle")
+
+# Define dimensions of the rectangle
+length = 10  # Length of the rectangle
+breadth = 5    # Width of the rectangle
+
+# Create a rectangle sketch
+sketch = doc.addObject('Sketcher::SketchObject', 'RectangleSketch')
+sketch.addGeometry(Part.Line(App.Vector(0, 0, 0), App.Vector(length, 0, 0)), False)
+sketch.addGeometry(Part.Line(App.Vector(length, 0, 0), App.Vector(length, breadth, 0)), False)
+sketch.addGeometry(Part.Line(App.Vector(length, breadth, 0), App.Vector(0, breadth, 0)), False)
+sketch.addGeometry(Part.Line(App.Vector(0, breadth, 0), App.Vector(0, 0, 0)), False)
+Part.show(sketch)
+
+# Close the sketch
+sketch.close()
+
+# Create a pad from the sketch
+rectangle = doc.addObject("PartDesign::Pad", "Rectangle")
+rectangle.Sketch = sketch
+rectangle.Length = 10  # Extrusion length
+
+# Display the document
+App.ActiveDocument.recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")
+```
+The error I encountered is
+```
+Traceback (most recent call last):
+  File "/home/abadagab/results/code/query_3_direct_attempt_2.FCMacro", line 13, in <module>
+    sketch.addGeometry(Part.Line(App.Vector(0, 0, 0), App.Vector(length, 0, 0)), False)
+<class 'TypeError'>: Unsupported geometry type: Part::GeomLine
+```
+
+### [Answer]
+```python
+import Part
+import math
+from FreeCAD import Base
+
+length = 30.0
+breadth = 20.0
+height = 20
+
+#Another way of making the sketch of a rectangle is by appending all the points in this manner and making a wire.
+App.newDocument("RectangleBox")
+App.setActiveDocument("RectangleBox")
+App.ActiveDocument = App.getDocument("RectangleBox")
+Gui.ActiveDocument = Gui.getDocument("RectangleBox")
+rectangle_points = []
+rectangle_points.append(Base.Vector(0, 0, 0))
+rectangle_points.append(Base.Vector(length, 0, 0))
+rectangle_points.append(Base.Vector(length, breadth, 0))
+rectangle_points.append(Base.Vector(0, breadth, 0))
+rectangle_points.append(Base.Vector(0, 0, 0))
+
+# Create the rectangle wire
+rectangle_wire = Part.makePolygon(rectangle_points)
+rectangle_face = Part.Face(rectangle_wire)
+rectangle_solid = rectangle_face.extrude(Base.Vector(0, 0, height))
+Part.show(rectangle_solid)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")
+```
+
+### [User message]
+The code I worked on is
+```python
+```
+The error I encountered is
+```
+Traceback (most recent call last):
+  File "/home/abadagab/results/code/query_0_direct_attempt_1.FCMacro", line 25, in <module>
+    rectangle_solid = Part.extrude(rectangle_face, Base.Vector(0, 0, height))
+<class 'AttributeError'>: module 'Part' has no attribute 'extrude'
+```
+
+### [Answer]
+```python
+import Part
+import math
+from FreeCAD import Base
+
+length = 30.0
+breadth = 20.0
+height = 20
+
+#Another way of making the sketch of a rectangle is by appending all the points in this manner and making a wire.
+App.newDocument("RectangleBox")
+App.setActiveDocument("RectangleBox")
+App.ActiveDocument = App.getDocument("RectangleBox")
+Gui.ActiveDocument = Gui.getDocument("RectangleBox")
+rectangle_points = []
+rectangle_points.append(Base.Vector(0, 0, 0))
+rectangle_points.append(Base.Vector(length, 0, 0))
+rectangle_points.append(Base.Vector(length, breadth, 0))
+rectangle_points.append(Base.Vector(0, breadth, 0))
+rectangle_points.append(Base.Vector(0, 0, 0))
+
+# Create the rectangle wire
+rectangle_wire = Part.makePolygon(rectangle_points)
+rectangle_face = Part.Face(rectangle_wire)
+rectangle_solid = rectangle_face.extrude(Base.Vector(0, 0, height)) #This is how the sketch should be extruded
+
+### [User message]
 The code I worked on is:
 ``` python
 {
