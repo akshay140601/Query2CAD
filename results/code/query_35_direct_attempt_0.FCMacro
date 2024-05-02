@@ -1,0 +1,24 @@
+import Part
+
+# Step 1: Create a new document
+App.newDocument("CAD_Design")
+App.setActiveDocument("CAD_Design")
+App.ActiveDocument = App.getDocument("CAD_Design")
+Gui.ActiveDocument = Gui.getDocument("CAD_Design")
+
+# Step 2: Create a rectangular block
+rectangular_block = Part.makeBox(100, 50, 50)
+
+# Step 3: Create a cylindrical roller
+cylindrical_roller = Part.makeCylinder(10, 100)
+
+# Step 4: Position the cylindrical roller on top of the rectangular block
+cylindrical_roller.Placement.Base = App.Vector(0, 0, 50)
+
+# Step 5: Show the 3D model
+Part.show(rectangular_block)
+Part.show(cylindrical_roller)
+
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

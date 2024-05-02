@@ -1,0 +1,21 @@
+import Part
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Make a cylinder with radius 20 mm and height 5 mm
+cylinder = Part.makeCylinder(20, 5)
+
+# Step 3: Create a sketch of a square hole at the center of the cylinder
+sketch = doc.addObject("Sketcher::SketchObject", "Sketch")
+sketch.addGeometry(Part.Rectangle(App.Vector(-10, -10, 0), App.Vector(10, -10, 0), App.Vector(10, 10, 0), App.Vector(-10, 10, 0)), False)
+doc.recompute()
+
+# Step 4: Make a square with sides equal to the diameter of the cylinder
+square = Part.makeBox(40, 40, 5)
+
+# Step 5: Cut the square hole from the cylinder
+cut_cylinder = cylinder.cut(square)
+
+# Step 6: Show the final part
+Part.show(cut_cylinder)

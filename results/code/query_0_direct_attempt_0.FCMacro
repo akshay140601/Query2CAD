@@ -1,0 +1,3 @@
+import Part
+cube = Part.makeBox(10, 10, 10)
+Part.show(cube)

@@ -1,0 +1,3 @@
+import Part
+Sphere = Part.makeSphere(75)
+Part.show(Sphere)

@@ -1,0 +1,13 @@
+import Part
+
+# Step 1: Create a new document in FreeCAD
+doc = App.newDocument()
+
+# Step 2: Use the Part.makeCircle function to create a circle with a radius of 6 mm
+circle = Part.makeCircle(6)
+
+# Step 3: Use the Part.makeThickness function to give the circle a thickness of 2 mm
+plate = circle.makeThickness(2, 0.1, 0.1)  # Added an additional argument for the function
+
+# Step 4: Write Part.show to see the plate generated
+Part.show(plate)

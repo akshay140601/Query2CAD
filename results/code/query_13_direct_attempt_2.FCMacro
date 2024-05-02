@@ -1,0 +1,29 @@
+import Part
+import FreeCAD as App
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Sketch a triangle for the base of the pyramid
+triangle_points = [App.Vector(0, 0, 0), App.Vector(15, 0, 0), App.Vector(7.5, 13, 0)]
+triangle_wire = Part.makePolygon(triangle_points)
+triangle_face = Part.Face(triangle_wire)
+
+# Step 3: Extrude the triangle to create the pyramid
+pyramid_base = triangle_face.extrude(App.Vector(0, 0, 20))
+
+# Step 4: Add sketches for the triangular faces
+sketch1 = doc.addObject("Sketcher::SketchObject", "Sketch1")
+sketch1.addGeometry(Part.LineSegment(App.Vector(0, 0, 0), App.Vector(7.5, 13, 0)))
+sketch1.addGeometry(Part.LineSegment(App.Vector(7.5, 13, 0), App.Vector(15, 0, 0)))
+sketch1.addGeometry(Part.LineSegment(App.Vector(15, 0, 0), App.Vector(0, 0, 0)))
+doc.recompute()
+
+# Step 5: Extrude the sketches to create the remaining faces
+face1 = sketch1.extrude(App.Vector(0, 0, 20))
+face2 = sketch1.extrude(App.Vector(0, 0, -20))
+
+# Step 6: Check the 3D model
+Part.show(pyramid_base)
+Part.show(face1)
+Part.show(face2)

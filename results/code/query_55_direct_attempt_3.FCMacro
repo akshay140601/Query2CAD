@@ -1,0 +1,35 @@
+import Part
+import Sketcher
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Sketch the profile of the football goal post
+sketch = doc.addObject("Sketcher::SketchObject", "Sketch")
+sketch.addGeometry(Part.makeRectangle(0, 0, 7300, 2400), False)
+doc.recompute()
+
+# Step 3: Extrude the sketch to create a solid body for the goal post
+wire = FreeCAD.ActiveDocument.Sketch.Shape.Wires[0]
+face = Part.Face(wire)
+goal_post = face.extrude(FreeCAD.Vector(0, 0, 2400))
+Part.show(goal_post)
+
+# Step 4: Add details such as the crossbar and net hooks
+crossbar = Part.makeBox(7300, 100, 100)
+crossbar.Placement.Base = App.Vector(0, 0, 2300)
+Part.show(crossbar)
+
+net_hook1 = Part.makeBox(50, 50, 200)
+net_hook1.Placement.Base = App.Vector(0, 0, 2400)
+Part.show(net_hook1)
+
+net_hook2 = Part.makeBox(50, 50, 200)
+net_hook2.Placement.Base = App.Vector(7250, 0, 2400)
+Part.show(net_hook2)
+
+# Step 5: Adjust the dimensions to match the width of 7300mm and the height of 2400mm
+
+# Step 6: Add any additional features or details
+
+# Step 7: Review the 3D model and make any necessary adjustments before finalizing the design

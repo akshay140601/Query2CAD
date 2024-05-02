@@ -1,0 +1,18 @@
+import Part
+import Sketcher
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Sketch a semi-circle with a radius of 25mm
+sketch = doc.addObject("Sketcher::SketchObject", "Sketch")
+sketch.addGeometry(Part.ArcOfCircle(Part.Circle(App.Vector(0, 0, 0), App.Vector(0, 0, 1), 25), 0, 180), False)
+doc.recompute()
+
+# Step 3: Extrude the semi-circle to a thickness of 5mm to create a disc
+wire = FreeCAD.ActiveDocument.Sketch.Shape.Wires[0]
+face = Part.Face(wire)
+disc = face.extrude(FreeCAD.Vector(0, 0, 5))  # Close the solid
+
+# Step 4: Show the generated part
+Part.show(disc)

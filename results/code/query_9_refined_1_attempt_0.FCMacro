@@ -1,0 +1,22 @@
+import Part
+from FreeCAD import Base
+
+# Step 1: Create a new document
+App.newDocument("Pyramid")
+App.setActiveDocument("Pyramid")
+App.ActiveDocument = App.getDocument("Pyramid")
+Gui.ActiveDocument = Gui.getDocument("Pyramid")
+
+# Step 2: Create a square base with 20mm sides
+square_points = [Base.Vector(0, 0, 0), Base.Vector(20, 0, 0), Base.Vector(20, 20, 0), Base.Vector(0, 20, 0)]
+square_wire = Part.makePolygon(square_points)
+square_face = Part.Face(square_wire)
+
+# Step 3: Extrude the square base to a height of 30mm to create the pyramid
+pyramid_solid = square_face.extrude(Base.Vector(0, 0, 30))
+
+# Step 4: Show the 3D model of the pyramid
+Part.show(pyramid_solid)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

@@ -1,0 +1,29 @@
+import Part
+import math
+from FreeCAD import Base
+
+# Create a new document
+App.newDocument("Pyramid")
+App.setActiveDocument("Pyramid")
+App.ActiveDocument = App.getDocument("Pyramid")
+Gui.ActiveDocument = Gui.getDocument("Pyramid")
+
+# Step 2: Sketch a square with 20mm sides as the base of the pyramid
+square_points = [Base.Vector(0, 0, 0), Base.Vector(20, 0, 0), Base.Vector(20, 20, 0), Base.Vector(0, 20, 0)]
+square_wire = Part.makePolygon(square_points)
+square_face = Part.Face(square_wire)
+square_solid = square_face.extrude(Base.Vector(0, 0, 30))
+
+# Step 4: Create a triangle on top of the base with 20mm sides
+triangle_points = [Base.Vector(10, 10, 30), Base.Vector(0, 0, 30), Base.Vector(20, 0, 30)]
+triangle_wire = Part.makePolygon(triangle_points)
+triangle_face = Part.Face(triangle_wire)
+
+# Step 5: Extrude the triangle to meet at the apex to form the complete pyramid
+pyramid_solid = triangle_face.extrude(Base.Vector(0, 0, 30))
+
+# Step 6: Show the generated part
+Part.show(pyramid_solid)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

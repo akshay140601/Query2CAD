@@ -1,0 +1,36 @@
+import Part
+from FreeCAD import Base
+import math
+
+# Create a new document
+App.newDocument("HexagonalPrism")
+App.setActiveDocument("HexagonalPrism")
+App.ActiveDocument = App.getDocument("HexagonalPrism")
+Gui.ActiveDocument = Gui.getDocument("HexagonalPrism")
+
+# Define the side length and height
+side_length = 15.0
+height = 30.0
+
+# Calculate the points of the hexagon
+hexagon_points = []
+angle = 360 / 6  # Angle between each vertex of the hexagon
+for i in range(6):
+    x = side_length * math.cos(math.radians(i * angle))
+    y = side_length * math.sin(math.radians(i * angle))
+    hexagon_points.append(Base.Vector(x, y, 0))
+
+hexagon_points.append(hexagon_points[0])  # Close the sketch.
+
+# Create the hexagon wire
+hexagon_wire = Part.makePolygon(hexagon_points)
+hexagon_face = Part.Face(hexagon_wire)
+
+# Extrude the hexagon face to create a hexagonal prism
+hexagonal_prism = hexagon_face.extrude(Base.Vector(0, 0, height))
+
+# Show the hexagonal prism
+Part.show(hexagonal_prism)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

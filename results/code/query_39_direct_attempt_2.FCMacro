@@ -1,0 +1,22 @@
+import Part
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Sketch a circle with outer diameter 20mm
+outer_circle = Part.makeCircle(10)  # Outer diameter is 20mm
+
+# Step 3: Sketch a circle with inner diameter 10mm
+inner_circle = Part.makeCircle(5)  # Inner diameter is 10mm
+
+# Step 4: Use the Part.Face function to create the outer circle
+outer_shape = Part.Face(outer_circle)
+
+# Step 5: Use the Part.Face function to create the inner circle
+inner_shape = Part.Face(inner_circle)
+
+# Step 6: Use the Part.makeLoft function to create the flange by lofting between the outer and inner circles
+flange = Part.makeLoft([outer_shape, inner_shape])
+
+# Step 7: Write Part.show to see the part generated
+Part.show(flange)

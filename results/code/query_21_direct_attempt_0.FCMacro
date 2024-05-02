@@ -1,0 +1,19 @@
+import Part
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Create a solid cuboid with dimensions 10 mm x 5 mm x 2 mm
+outer_cuboid = Part.makeBox(10, 5, 2)
+
+# Step 3: Create a smaller cuboid inside the first one
+inner_cuboid = Part.makeBox(9.5, 4.5, 1.5)
+
+# Step 4: Position the smaller cuboid inside the larger one
+inner_cuboid.Placement.Base = App.Vector(0.25, 0.25, 0.25)
+
+# Step 5: Subtract the smaller cuboid from the larger one
+hollow_cuboid = outer_cuboid.cut(inner_cuboid)
+
+# Step 6: Show the hollow cuboid
+Part.show(hollow_cuboid)

@@ -1,0 +1,42 @@
+import Part
+import math
+from FreeCAD import Base
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Sketch the overall shape of the ballpoint pen including the body and the cap
+body_sketch = doc.addObject("Sketcher::SketchObject", "BodySketch")
+# Add your sketching code here
+
+# Step 3: Extrude the sketch to create a solid body for the pen
+body_wire = body_sketch.Shape.Wires[0] if body_sketch.Shape.Wires else None
+if body_wire:
+    body_face = Part.Face(body_wire)
+    pen_body = body_face.extrude(FreeCAD.Vector(0,0,100))  # Adjust the extrusion height as needed
+
+# Step 4: Create a separate sketch for the nib of the pen
+nib_sketch = doc.addObject("Sketcher::SketchObject", "NibSketch")
+Part.show(nib_sketch)
+# Add your sketching code for the nib here
+
+# Step 5: Extrude or revolve the sketch to create the nib
+nib_wire = nib_sketch.Shape.Wires[0] if nib_sketch.Shape.Wires else None
+if nib_wire:
+    nib_face = Part.Face(nib_wire)
+    pen_nib = nib_face.extrude(FreeCAD.Vector(0,0,20))  # Adjust the extrusion height as needed
+
+# Step 6: Add details such as the clip, button, and any other features of the pen
+# Add your code to create these details
+
+# Step 7: Finalize the design by adjusting dimensions and adding any necessary details
+# Add your final adjustments and details here
+
+# Step 8: Verify the design and make any final modifications if needed
+doc.recompute()
+
+# Step 9: 3D print or render the model to visualize the final product
+if 'pen_body' in locals():
+    Part.show(pen_body)
+if 'pen_nib' in locals():
+    Part.show(pen_nib)

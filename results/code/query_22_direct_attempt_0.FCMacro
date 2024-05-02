@@ -1,0 +1,18 @@
+import Part
+import Sketcher
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Create an ellipse with major axis of 50mm and minor axis of 30mm
+sketch = doc.addObject("Sketcher::SketchObject", "Sketch")
+sketch.addGeometry(Part.Ellipse(App.Vector(0, 0, 0), App.Vector(0, 0, 1), 50, 30), False)
+doc.recompute()
+
+# Step 3: Extrude the ellipse to a thickness of 5mm
+wire = FreeCAD.ActiveDocument.Sketch.Shape.Wires[0]
+face = Part.Face(wire)
+extrude = face.extrude(FreeCAD.Vector(0, 0, 5))
+
+# Step 4: Show the elliptical plate generated
+Part.show(extrude)

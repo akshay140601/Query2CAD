@@ -1,0 +1,36 @@
+import Part
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Sketch the basic shape of the pen body
+pen_body = Part.makeCylinder(5, 100)  # Assuming diameter of 10mm and length of 100mm
+
+# Step 3: Extrude the sketch to create the solid body of the pen
+pen_solid = pen_body.extrude(App.Vector(0, 0, 100))
+
+# Step 4: Add details such as the clip, button, and grip textures to the pen body
+clip = Part.makeBox(2, 10, 5)  # Assuming dimensions for the clip
+clip.translate(App.Vector(0, 0, 100))  # Position the clip at the top of the pen body
+pen_solid = pen_solid.fuse(clip)  # Add the clip to the pen body
+
+button = Part.makeCylinder(3, 2)  # Assuming dimensions for the button
+button.translate(App.Vector(0, 0, 5))  # Position the button at the bottom of the pen body
+pen_solid = pen_solid.fuse(button)  # Add the button to the pen body
+
+# Step 5: Sketch the nib of the pen
+nib = Part.makeCylinder(1, 5)  # Assuming dimensions for the nib
+
+# Step 6: Extrude the nib sketch to create the nib
+nib_solid = nib.extrude(App.Vector(0, 0, 5))
+
+# Step 7: Assemble the nib to the pen body
+nib_solid.translate(App.Vector(0, 0, 105))  # Position the nib at the tip of the pen body
+pen_with_nib = pen_solid.fuse(nib_solid)  # Attach the nib to the pen body
+
+# Step 8: Add any final details or adjustments to the overall design (if needed)
+
+# Step 9: Check the model for any errors or inconsistencies
+
+# Step 10: Save and export the CAD model of the ballpoint pen with a nib
+Part.show(pen_with_nib)

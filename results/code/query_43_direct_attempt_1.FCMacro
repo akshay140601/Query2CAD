@@ -1,0 +1,27 @@
+import Part
+import math
+from FreeCAD import Base
+
+# Step 1: Create a new document
+App.newDocument("CrescentMoon")
+App.setActiveDocument("CrescentMoon")
+App.ActiveDocument = App.getDocument("CrescentMoon")
+Gui.ActiveDocument = Gui.getDocument("CrescentMoon")
+
+# Step 2: Create the outer circle
+outer_circle = Part.makeCircle(15)
+
+# Step 3: Create the inner circle
+inner_circle = Part.makeCircle(13)
+
+# Step 4: Loft between the two circles
+crescent_shape = Part.makeLoft([outer_circle, inner_circle])
+
+# Step 5: Adjust the thickness of the lofted shape
+crescent_shape = crescent_shape.makeThickness(2, 1e-1, 0.1) # Added the third argument for thickness
+
+# Step 6: Show the final crescent moon shape
+Part.show(crescent_shape)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

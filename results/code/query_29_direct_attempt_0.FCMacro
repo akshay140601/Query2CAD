@@ -1,0 +1,28 @@
+import Part
+import Sketcher
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Sketch a 40mm square on the XY plane
+sketch1 = doc.addObject("Sketcher::SketchObject", "Sketch1")
+sketch1.addGeometry(Part.Rectangle(App.Vector(0, 0, 0), App.Vector(0, 40, 0), App.Vector(40, 40, 0), App.Vector(40, 0, 0)), False)
+doc.recompute()
+
+# Step 3: Extrude the sketch by 3mm to create the first plate
+plate1 = sketch1.extrude(App.Vector(0, 0, 3))
+
+# Step 4: Create a second sketch of a 40mm square parallel to the first plate, separated by a 10mm gap
+sketch2 = doc.addObject("Sketcher::SketchObject", "Sketch2")
+sketch2.addGeometry(Part.Rectangle(App.Vector(0, 0, 13), App.Vector(0, 40, 13), App.Vector(40, 40, 13), App.Vector(40, 0, 13)), False)
+doc.recompute()
+
+# Step 5: Extrude the second sketch by 3mm to create the second plate
+plate2 = sketch2.extrude(App.Vector(0, 0, 3))
+
+# Step 6: Use the Align tool to position the second plate parallel to the first plate with a 10mm gap
+Part.show(plate1)
+Part.show(plate2)
+
+# Step 7: Check the alignment and dimensions of the plates
+# Step 8: Write Part.show to see the part generated

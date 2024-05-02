@@ -1,0 +1,25 @@
+import Part
+import FreeCAD as App
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Sketch a square with 20mm sides for the base of the pyramid
+square = Part.makePolygon(4, True, 20)
+square_face = Part.Face(square)
+
+# Step 3: Extrude the square sketch to a height of 30mm to create the base of the pyramid
+base = square_face.extrude(App.Vector(0, 0, 30))
+
+# Step 4: Sketch a triangle on top of the square base with a height of 30mm
+triangle_points = [App.Vector(0, 0, 30), App.Vector(10, 20, 30), App.Vector(20, 0, 30)]
+triangle = Part.makePolygon(triangle_points)
+triangle_face = Part.Face(triangle)
+
+# Step 5: Create a ruled surface between the square base and the triangle to form the faces of the pyramid
+pyramid = base.makeLoft([triangle_face])
+
+# Step 6: Hide or delete any unnecessary sketches or construction lines
+
+# Step 7: Show the 3D model of the pyramid
+Part.show(pyramid)

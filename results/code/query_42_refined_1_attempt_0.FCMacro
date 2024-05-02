@@ -1,0 +1,37 @@
+import Part
+import math
+from FreeCAD import Base
+
+# Create a new document
+App.newDocument("StarPlate")
+App.setActiveDocument("StarPlate")
+App.ActiveDocument = App.getDocument("StarPlate")
+Gui.ActiveDocument = Gui.getDocument("StarPlate")
+
+# Define the points for the star shape
+star_points = []
+angle = 360 / 5  # Angle between each vertex of the star
+for i in range(5):
+    x = 5 * math.cos(math.radians(i * angle))
+    y = 5 * math.sin(math.radians(i * angle))
+    star_points.append(Base.Vector(x, y, 0))
+    # Add additional points to create the star shape
+    x = 2.5 * math.cos(math.radians(i * angle + angle/2))
+    y = 2.5 * math.sin(math.radians(i * angle + angle/2))
+    star_points.append(Base.Vector(x, y, 0))
+
+# Close the sketch by connecting the last point to the first point
+star_points.append(star_points[0])
+
+# Create the star shape sketch
+star_wire = Part.makePolygon(star_points)
+star_face = Part.Face(star_wire)
+
+# Extrude the sketch to create a solid body
+star_solid = star_face.extrude(Base.Vector(0, 0, 2))
+
+# Show the final 3D model
+Part.show(star_solid)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

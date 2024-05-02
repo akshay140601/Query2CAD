@@ -1,0 +1,20 @@
+import Part
+
+# Step 1: Create a new document
+App.newDocument("Screw")
+App.setActiveDocument("Screw")
+App.ActiveDocument = App.getDocument("Screw")
+Gui.ActiveDocument = Gui.getDocument("Screw")
+
+# Step 2: Make a cylinder with a radius of 2mm and a length of 10mm
+screw = Part.makeCylinder(2, 10)
+
+# Step 3: Make a helix cut on the cylinder
+helix = Part.makeHelix(2, 10, 2, heightstyle=True)  # Adjusted to include heightstyle parameter
+screw = screw.cut(helix)
+
+# Step 4: Show the screw model
+Part.show(screw)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

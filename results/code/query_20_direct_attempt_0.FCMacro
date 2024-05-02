@@ -1,0 +1,21 @@
+import Part
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Sketch a circle with a diameter of 50mm for the outer diameter of the cylinder
+outer_circle = Part.makeCircle(25)
+
+# Step 3: Sketch a circle with a diameter of 45mm for the inner diameter of the cylinder
+inner_circle = Part.makeCircle(22.5)
+
+# Step 4: Extrude the sketch to a height of 75mm to create the hollow cylinder
+outer_face = Part.Face(outer_circle)
+inner_face = Part.Face(inner_circle)
+cylinder = outer_face.extrude(App.Vector(0, 0, 75)) - inner_face.extrude(App.Vector(0, 0, 75))
+
+# Step 5: Use the Pocket function to remove the inner circle from the cylinder
+hollow_cylinder = cylinder.makePocket(inner_circle)
+
+# Step 6: Show the generated part
+Part.show(hollow_cylinder)

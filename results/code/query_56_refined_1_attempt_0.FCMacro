@@ -1,0 +1,34 @@
+import Part
+from FreeCAD import Base
+
+# Create a new document
+App.newDocument("Bookshelf")
+App.setActiveDocument("Bookshelf")
+App.ActiveDocument = App.getDocument("Bookshelf")
+Gui.ActiveDocument = Gui.getDocument("Bookshelf")
+
+# Dimensions of the bookshelf
+shelf_height = 200.0  # Height of each shelf
+shelf_length = 800.0  # Length of each shelf
+shelf_depth = 300.0  # Depth of each shelf
+
+# Create the main structure of the bookshelf
+main_structure = Part.makeBox(shelf_length, shelf_depth, shelf_height * 5)  # 5 shelves in total
+Part.show(main_structure)
+
+# Create the individual shelves
+shelf_gaps = shelf_height
+for i in range(1, 5):
+    shelf = Part.makeBox(shelf_length, shelf_depth, shelf_height)
+    shelf.Placement.Base = Base.Vector(0, 0, shelf_gaps * i)
+    
+    # Make cuts on each shelf
+    cut = Part.makeBox(shelf_length - 20, shelf_depth - 20, 10)  # Cut dimensions
+    cut.Placement.Base = Base.Vector(10, 10, 0)  # Position of the cut
+    shelf = shelf.cut(cut)
+    
+    Part.show(shelf)
+
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

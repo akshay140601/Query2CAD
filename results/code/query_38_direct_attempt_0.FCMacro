@@ -1,0 +1,23 @@
+import Part
+import Sketcher
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Create a cylinder with a diameter of 80mm to represent the solid shaft
+shaft = Part.makeCylinder(40, 100)  # Diameter of 80mm, height of 100mm
+
+# Step 3: Create a rectangular sketch for the keyway slot on the surface of the cylinder
+sketch = doc.addObject("Sketcher::SketchObject", "Sketch")
+sketch.addGeometry(Part.Rectangle(App.Vector(-10, -5), App.Vector(10, 5)))
+
+# Step 4: Cut extrude the rectangular sketch to create the keyway slot
+wire = Sketcher.Wire([Sketcher.Constraint('Coincident',0,2,1,1)])
+face = Part.Face(wire)
+keyway_slot = face.extrude(App.Vector(0, 0, 20))
+
+# Step 5: Add any additional details or features as needed
+final_shaft = shaft.cut(keyway_slot)
+
+# Step 6: Show the final part
+Part.show(final_shaft)

@@ -1,0 +1,16 @@
+import Part
+
+# Step 1: Create a new document
+App.newDocument("TorusDesign")
+App.setActiveDocument("TorusDesign")
+App.ActiveDocument = App.getDocument("TorusDesign")
+Gui.ActiveDocument = Gui.getDocument("TorusDesign")
+
+# Step 2: Use Part.makeTorus to create a torus with inner and outer radii
+torus = Part.makeTorus(50, 20)
+
+# Step 3: Show the torus generated
+Part.show(torus)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

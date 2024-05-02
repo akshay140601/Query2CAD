@@ -1,0 +1,40 @@
+import Part
+import math
+from FreeCAD import Base
+
+# Create a new document
+App.newDocument("OctagonalColumn")
+App.setActiveDocument("OctagonalColumn")
+App.ActiveDocument = App.getDocument("OctagonalColumn")
+Gui.ActiveDocument = Gui.getDocument("OctagonalColumn")
+
+# Define the side length and height of the octagon column
+side_length = 5.0
+height = 40.0
+
+# Calculate the points of the octagon
+octagon_points = []
+angle = 360 / 8  # Angle between each vertex of the octagon
+
+for i in range(8):
+    x = side_length * math.cos(math.radians(i * angle))
+    y = side_length * math.sin(math.radians(i * angle))
+    octagon_points.append(Base.Vector(x, y, 0))
+
+octagon_points.append(octagon_points[0])  # Close the sketch
+
+# Create the octagon wire
+octagon_wire = Part.makePolygon(octagon_points)
+octagon_face = Part.Face(octagon_wire)
+
+# Extrude the octagon face to create a solid column
+octagon_solid = octagon_face.extrude(Base.Vector(0, 0, height))
+
+# Add fillets or details if needed
+# Example: octagon_solid = octagon_solid.makeFillet(1.0, [edge for edge in octagon_solid.Edges])
+
+# Show the solid
+Part.show(octagon_solid)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

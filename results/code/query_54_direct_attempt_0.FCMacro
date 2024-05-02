@@ -1,0 +1,29 @@
+import Part
+from FreeCAD import Base
+
+# Step 1: Create a new document
+App.newDocument("Teapot")
+App.setActiveDocument("Teapot")
+App.ActiveDocument = App.getDocument("Teapot")
+Gui.ActiveDocument = Gui.getDocument("Teapot")
+
+# Step 2: Create the body of the teapot
+teapot_body = Part.makeCylinder(75, 100)  # Diameter of 150mm
+Part.show(teapot_body)
+
+# Step 3: Create the lid of the teapot
+teapot_lid = Part.makeCylinder(50, 10)  # Diameter of 100mm
+teapot_lid.Placement.Base = Base.Vector(0, 0, 100)  # Position the lid on top of the body
+Part.show(teapot_lid)
+
+# Step 4: Position the lid on top of the body
+teapot_lid.Placement.Base = Base.Vector(0, 0, 100)
+
+# Step 5: Merge the lid with the body to create a single solid teapot model
+teapot_model = teapot_body.fuse(teapot_lid)
+Part.show(teapot_model)
+
+# Step 6: Show the final teapot model
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

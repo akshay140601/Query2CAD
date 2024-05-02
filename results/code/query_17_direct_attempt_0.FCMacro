@@ -1,0 +1,22 @@
+import Part
+
+# Step 1: Create a new document
+App.newDocument("Shaft")
+App.setActiveDocument("Shaft")
+App.ActiveDocument = App.getDocument("Shaft")
+Gui.ActiveDocument = Gui.getDocument("Shaft")
+
+# Step 2: Create a cylinder with outer diameter of 80mm and height of 100mm
+outer_cylinder = Part.makeCylinder(40, 100)  # Radius is half of the diameter
+
+# Step 3: Create a smaller cylinder with inner diameter of 50mm and height of 100mm
+inner_cylinder = Part.makeCylinder(25, 100)  # Radius is half of the diameter
+
+# Step 4: Subtract the smaller cylinder from the larger cylinder to create a hollow shaft
+shaft = outer_cylinder.cut(inner_cylinder)
+
+# Step 5: Show the 3D model of the shaft
+Part.show(shaft)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

@@ -1,0 +1,38 @@
+import Part
+from FreeCAD import Base
+
+# Create a new document
+App.newDocument("BasketballHoop")
+App.setActiveDocument("BasketballHoop")
+App.ActiveDocument = App.getDocument("BasketballHoop")
+Gui.ActiveDocument = Gui.getDocument("BasketballHoop")
+
+# Step 2: Design the basketball hoop by creating a cylinder with a diameter of 450mm for the rim
+rim_radius = 450 / 2
+rim_height = 10
+rim = Part.makeCylinder(rim_radius, rim_height)
+
+# Step 3: Create a rectangular shape for the backboard measuring 1800mm by 1050mm
+backboard_length = 1800
+backboard_width = 1050
+backboard_height = 20
+backboard = Part.makeBox(backboard_length, backboard_width, backboard_height)
+
+# Step 4: Attach the backboard to the hoop at the desired height
+backboard.Placement.Base = Base.Vector(-backboard_length/2, -backboard_width/2, 0)
+
+# Step 5: Add support structures to hold the backboard in place
+support_height = 1000
+support_width = 50
+support_thickness = 20
+support1 = Part.makeBox(support_width, support_thickness, support_height)
+support2 = Part.makeBox(support_width, support_thickness, support_height)
+support1.Placement.Base = Base.Vector(-backboard_length/2 + support_width/2, -backboard_width/2, backboard_height)
+support2.Placement.Base = Base.Vector(backboard_length/2 - support_width/2, -backboard_width/2, backboard_height)
+
+# Step 6: Check the 3D model to ensure all dimensions and details are accurate
+basketball_hoop = rim.fuse(backboard.fuse(support1.fuse(support2)))
+Part.show(basketball_hoop)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

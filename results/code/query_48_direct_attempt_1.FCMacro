@@ -1,0 +1,38 @@
+import Part
+import math
+from FreeCAD import Base
+
+# Create a new document
+App.newDocument("CircularTable")
+App.setActiveDocument("CircularTable")
+App.ActiveDocument = App.getDocument("CircularTable")
+Gui.ActiveDocument = Gui.getDocument("CircularTable")
+
+# Step 2: Create the table top
+table_top = Part.makeCircle(30)
+table_top_face = Part.Face(table_top)
+table_top_solid = table_top_face.extrude(Base.Vector(0, 0, 2))
+
+# Step 3: Extrude the circle to create the table top
+table_top = table_top_solid
+
+# Step 4: Create four legs for the table
+leg_radius = 1
+leg_height = 10
+legs = []
+for i in range(4):
+    angle = math.radians(i * 90)
+    x = 30 * math.cos(angle)
+    y = 30 * math.sin(angle)
+    leg = Part.makeCylinder(leg_radius, leg_height, Base.Vector(x, y, 0))
+    legs.append(leg)
+
+# Step 5: Position the legs around the table top
+for leg in legs:
+    table_top = table_top.fuse(leg)
+
+# Step 6: Show the final 3D model
+Part.show(table_top)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

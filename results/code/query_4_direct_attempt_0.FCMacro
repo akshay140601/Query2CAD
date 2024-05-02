@@ -1,0 +1,16 @@
+import Part
+
+# Step 1: Create a new document in FreeCAD
+App.newDocument("Plate")
+App.setActiveDocument("Plate")
+App.ActiveDocument = App.getDocument("Plate")
+Gui.ActiveDocument = Gui.getDocument("Plate")
+
+# Step 2: Use the Part.makeCylinder function to create a cylinder
+plate = Part.makeCylinder(6, 2)
+
+# Step 3: Display the circular plate model
+Part.show(plate)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

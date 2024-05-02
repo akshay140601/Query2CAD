@@ -1,0 +1,31 @@
+import Part
+import math
+from FreeCAD import Base
+
+# NACA 0010 airfoil coordinates
+airfoil_points = [
+    (1.0, 0.0),
+    (0.995, 0.01),
+    (0.98, 0.02),
+    (0.955, 0.03),
+    (0.92, 0.04),
+    (0.875, 0.05),
+    (0.82, 0.06),
+    (0.755, 0.07),
+    (0.68, 0.08),
+    (0.595, 0.09),
+    (0.5, 0.1)
+]
+
+# Create the airfoil sketch
+doc = App.newDocument()
+sketch = doc.addObject("Sketcher::SketchObject", "AirfoilSketch")
+for point in airfoil_points:
+    sketch.addGeometry(Part.Point(point[0], point[1], 0), False) # Corrected the Point constructor
+doc.recompute()
+
+# Extrude the airfoil sketch to create the wing
+wire = FreeCAD.ActiveDocument.AirfoilSketch.Shape.Wires[0]
+face = Part.Face(wire)
+wing = face.extrude(FreeCAD.Vector(0, 0, 10))
+Part.show(wing)

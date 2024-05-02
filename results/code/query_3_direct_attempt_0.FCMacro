@@ -1,0 +1,19 @@
+import FreeCAD
+import Part
+
+# Create a new document
+doc = FreeCAD.newDocument()
+
+# Define the parameters for the cylinder
+base_radius = 10  # mm
+height = 20       # mm
+
+# Create a cylinder
+cylinder = Part.makeCylinder(base_radius, height)
+
+# Add cylinder to the document
+cylinder_object = doc.addObject("Part::Feature", "MyCylinder")
+cylinder_object.Shape = cylinder
+
+# Recompute the document to reflect changes
+doc.recompute()

@@ -1,0 +1,53 @@
+import Part
+import math
+
+# Step 1: Create a new document
+App.newDocument("HexagonalNut")
+App.setActiveDocument("HexagonalNut")
+App.ActiveDocument = App.getDocument("HexagonalNut")
+Gui.ActiveDocument = Gui.getDocument("HexagonalNut")
+
+# Step 2: Create a hexagon with an outer diameter of 20mm
+hexagon_points = []  # List to hold the points of the hexagon
+angle = 360 / 6  # Angle between each vertex of the hexagon
+outer_diameter = 20
+
+# Calculate the points of the hexagon
+for i in range(6):
+    x = outer_diameter/2 * math.cos(math.radians(i * angle))
+    y = outer_diameter/2 * math.sin(math.radians(i * angle))
+    hexagon_points.append(FreeCAD.Vector(x, y, 0))
+
+# Create the hexagon wire
+hexagon_wire = Part.makePolygon(hexagon_points)
+hexagon_face = Part.Face(hexagon_wire)
+
+# Step 3: Extrude the hexagon to a height of 10mm
+hexagon_solid = hexagon_face.extrude(FreeCAD.Vector(0, 0, 10))
+
+# Step 4: Create a smaller hexagon inside the main body for the through hole
+inner_hexagon_points = []  # List to hold the points of the inner hexagon
+inner_side_length = 10
+
+# Calculate the points of the inner hexagon
+for i in range(6):
+    x = inner_side_length/2 * math.cos(math.radians(i * angle))
+    y = inner_side_length/2 * math.sin(math.radians(i * angle))
+    inner_hexagon_points.append(FreeCAD.Vector(x, y, 0))
+
+# Create the inner hexagon wire
+inner_hexagon_wire = Part.makePolygon(inner_hexagon_points)
+inner_hexagon_face = Part.Face(inner_hexagon_wire)
+
+# Step 5: Use pocket or subtract feature to remove material from the main body
+nut_body = hexagon_solid.cut(inner_hexagon_face)
+
+# Step 6: Add any necessary chamfers or fillets
+edges = nut_body.Edges
+nut_with_hole = nut_body.makeFillet(1, edges)  # Adding a fillet for a smooth finish
+
+# Step 7: Show the generated part
+Part.show(nut_with_hole)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

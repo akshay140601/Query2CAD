@@ -1,0 +1,28 @@
+import Part
+import Sketcher
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Sketch the NACA 0010 airfoil profile
+sketch = doc.addObject("Sketcher::SketchObject", "Sketch")
+sketch.addGeometry(Part.Circle(App.Vector(0, 0, 0), App.Vector(0, 0, 1), 1), False)  # Example sketch, replace with NACA 0010 airfoil profile
+
+# Step 3: Extrude the airfoil profile to create the main wing shape
+wire = sketch.Shape.Wires[0]  # Corrected the reference to the sketch object
+face = Part.Face(wire)
+wing_shape = face.extrude(Base.Vector(0, 0, 100))  # Example extrusion length, adjust as needed
+
+# Step 4: Add additional features
+# Add wingtips, mounting points, control surfaces, etc.
+
+# Step 5: Create internal structures or ribs
+# Add ribs or internal structures for support and strength
+
+# Step 6: Finalize the design
+# Add necessary details and refine the overall shape
+
+# Step 7: Review and make adjustments
+
+# Step 8: Export the CAD model
+Part.show(wing_shape)

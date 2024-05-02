@@ -1,0 +1,36 @@
+import Part
+import math
+from FreeCAD import Base
+
+# Step 1: Create a new document
+App.newDocument("CeilingFan")
+App.setActiveDocument("CeilingFan")
+App.ActiveDocument = App.getDocument("CeilingFan")
+Gui.ActiveDocument = Gui.getDocument("CeilingFan")
+
+# Step 2: Sketch the outline of one blade of the ceiling fan
+blade_points = [Base.Vector(0, 0, 0), Base.Vector(500, 0, 0), Base.Vector(500, 50, 0), Base.Vector(0, 50, 0)]
+blade_wire = Part.makePolygon(blade_points)
+blade_face = Part.Face(blade_wire)
+
+# Step 3: Create a circle representing the central hub
+central_hub = Part.makeCircle(75)  # Diameter of 150mm
+
+# Step 4: Create a rectangle representing the blade
+blade_rectangle = Part.makePolygon([Base.Vector(0, 0, 0), Base.Vector(500, 0, 0), Base.Vector(500, 50, 0), Base.Vector(0, 50, 0)])
+blade_face = Part.Face(blade_rectangle)
+
+# Step 5: Loft the blade sketch along the circle representing the central hub
+blade_loft = Part.makeLoft([blade_face, central_hub])
+
+# Step 6: Create a duplicate of the lofted blade and rotate it to form the second blade
+blade2 = Part.makePolarPattern(blade_loft, Base.Vector(0, 0, 0), Base.Vector(0, 0, 1), 2, 360)
+
+# Step 7: Combine both blades and the central hub to create a single solid model
+ceiling_fan = Part.makeFusion([blade_loft, blade2, central_hub])
+
+# Step 8: Show the final 3D model of the two-blade ceiling fan
+Part.show(ceiling_fan)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

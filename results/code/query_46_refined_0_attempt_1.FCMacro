@@ -1,0 +1,17 @@
+import Part
+
+# Create the boat hull shape
+length = 2000  # Length of the boat hull
+height = 200  # Height of the boat hull
+width = 500  # Width of the boat hull
+
+# Create the boat hull shape using simple shapes
+bottom = Part.makeBox(length, width, height)
+top = Part.makeBox(length, width, height/2)
+top.translate(Part.Vector(0, 0, height/2))
+
+# Combine the shapes to create the boat hull
+boat_hull = bottom.fuse(top)
+
+# Show the boat hull
+Part.show(boat_hull)

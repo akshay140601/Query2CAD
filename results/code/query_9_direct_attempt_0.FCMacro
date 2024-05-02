@@ -1,0 +1,27 @@
+import Part
+import Sketcher
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Sketch a trapezoid shape
+sketch = doc.addObject("Sketcher::SketchObject", "Sketch")
+sketch.addGeometry(Part.Line(App.Vector(0, 0, 0), App.Vector(15, 0, 0)))
+sketch.addGeometry(Part.Line(App.Vector(15, 0, 0), App.Vector(10, 10, 0)))
+sketch.addGeometry(Part.Line(App.Vector(10, 10, 0), App.Vector(5, 10, 0)))
+sketch.addGeometry(Part.Line(App.Vector(5, 10, 0), App.Vector(0, 0, 0)))
+sketch.addConstraint(Sketcher.Constraint('Coincident', 0, 2, 1, 1))
+sketch.addConstraint(Sketcher.Constraint('Coincident', 1, 2, 2, 1))
+sketch.addConstraint(Sketcher.Constraint('Coincident', 2, 2, 3, 1))
+sketch.addConstraint(Sketcher.Constraint('Coincident', 3, 2, 0, 1))
+doc.recompute()
+
+# Step 3: Extrude the sketch
+wire = FreeCAD.ActiveDocument.Sketch.Shape.Wires[0]
+face = Part.Face(wire)
+plate = face.extrude(FreeCAD.Vector(0, 0, 5))
+
+# Step 4: Add any additional details or features as needed
+
+# Step 5: Show the part generated
+Part.show(plate)

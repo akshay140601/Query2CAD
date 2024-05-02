@@ -1,0 +1,31 @@
+import Part
+import math
+from FreeCAD import Base
+
+# Create a new document
+App.newDocument("DiamondPlate")
+App.setActiveDocument("DiamondPlate")
+App.ActiveDocument = App.getDocument("DiamondPlate")
+Gui.ActiveDocument = Gui.getDocument("DiamondPlate")
+
+# Define the points for the diamond shape
+diamond_points = [
+    Base.Vector(0, 10, 0),
+    Base.Vector(10, 0, 0),
+    Base.Vector(20, 10, 0),
+    Base.Vector(10, 20, 0),
+    Base.Vector(0, 10, 0)
+]
+
+# Create the diamond wire
+diamond_wire = Part.makePolygon(diamond_points)
+diamond_face = Part.Face(diamond_wire)
+
+# Extrude the diamond face to create a solid body
+diamond_solid = diamond_face.extrude(Base.Vector(0, 0, 3))
+
+# Show the 3D model of the diamond shape plate
+Part.show(diamond_solid)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

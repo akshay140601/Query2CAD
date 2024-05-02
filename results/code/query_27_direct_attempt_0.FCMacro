@@ -1,0 +1,31 @@
+import Part
+from FreeCAD import Base
+
+# Step 1: Create a new document
+App.newDocument("SphereWithCylinders")
+App.setActiveDocument("SphereWithCylinders")
+App.ActiveDocument = App.getDocument("SphereWithCylinders")
+Gui.ActiveDocument = Gui.getDocument("SphereWithCylinders")
+
+# Step 2: Create a solid sphere with a radius of 15mm
+sphere = Part.makeSphere(15)
+
+# Step 3: Create a small cylinder with a radius of 5mm and a height of 10mm
+cylinder = Part.makeCylinder(5, 10)
+
+# Step 4: Position and rotate the cylinder to place three of them equidistant on the surface of the sphere
+angle = 360 / 3  # Angle between each cylinder
+for i in range(3):
+    x = 15 * Base.Vector(math.cos(math.radians(i * angle)), math.sin(math.radians(i * angle)), 0)
+    cylinder_copy = cylinder.copy()
+    cylinder_copy.translate(x)
+    sphere = sphere.fuse(cylinder_copy)
+
+# Step 5: Merge the cylinder and the sphere together
+final_model = sphere
+
+# Step 6: Show the final 3D model generated
+Part.show(final_model)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

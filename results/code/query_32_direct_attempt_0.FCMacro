@@ -1,0 +1,19 @@
+import Part
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Create a sphere with a radius of 25mm
+sphere = Part.makeSphere(25)
+
+# Step 3: Create a cube with sides of 50mm
+cube = Part.makeBox(50, 50, 50)
+
+# Step 4: Position the sphere and cube to fuse at one face
+cube.Placement.Base = App.Vector(0, 0, 25)
+
+# Step 5: Use Boolean operation to unite the sphere and cube
+combined_shape = sphere.fuse(cube)
+
+# Step 6: Show the combined shape
+Part.show(combined_shape)

@@ -1,0 +1,16 @@
+import Part
+
+# Step 1: Create a new document
+App.newDocument("Cylinder_Design")
+App.setActiveDocument("Cylinder_Design")
+App.ActiveDocument = App.getDocument("Cylinder_Design")
+Gui.ActiveDocument = Gui.getDocument("Cylinder_Design")
+
+# Step 2: Create a cylinder with diameter 20mm and height 100mm
+cylinder = Part.makeCylinder(10, 100)
+
+# Step 3: Show the generated cylinder
+Part.show(cylinder)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

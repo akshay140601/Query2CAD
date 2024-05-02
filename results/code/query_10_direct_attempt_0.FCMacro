@@ -1,0 +1,33 @@
+import Part
+import math
+from FreeCAD import Base
+
+# Create a new document
+App.newDocument("Hexagon")
+App.setActiveDocument("Hexagon")
+App.ActiveDocument = App.getDocument("Hexagon")
+Gui.ActiveDocument = Gui.getDocument("Hexagon")
+
+# Define the side length of the hexagon
+side_length = 5.0
+
+# Calculate the points of the hexagon
+hexagon_points = []
+angle = 360 / 6  # Angle between each vertex of the hexagon
+for i in range(6):
+    x = side_length * math.cos(math.radians(i * angle))
+    y = side_length * math.sin(math.radians(i * angle))
+    hexagon_points.append(Base.Vector(x, y, 0))
+
+# Create the hexagon wire
+hexagon_wire = Part.makePolygon(hexagon_points)
+hexagon_face = Part.Face(hexagon_wire)
+
+# Extrude the hexagon face to create a solid
+hexagon_solid = hexagon_face.extrude(Base.Vector(0, 0, 2))
+
+# Show the solid
+Part.show(hexagon_solid)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

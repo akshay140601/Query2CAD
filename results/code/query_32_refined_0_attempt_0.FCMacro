@@ -1,0 +1,30 @@
+import Part
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Create a sphere with a radius of 25mm
+sphere = Part.makeSphere(25)
+
+# Step 3: Create a cube with sides of 50mm
+cube = Part.makeBox(50, 50, 50)
+
+# Step 4: Position the sphere and cube to fuse at one face
+cube.Placement.Base = App.Vector(0, 0, 25)
+
+# Step 5: Use Boolean operation to unite the sphere and cube
+combined_shape = sphere.fuse(cube)
+
+# Step 6: Create a pyramid on top of one side of the cube
+pyramid_base = Part.makePolygon([App.Vector(-25, -25, 50), App.Vector(25, -25, 50), App.Vector(25, 25, 50), App.Vector(-25, 25, 50)])
+pyramid_face = Part.Face(pyramid_base)
+pyramid_solid = pyramid_face.extrude(App.Vector(0, 0, 25))
+
+# Step 7: Position the pyramid on top of the cube
+pyramid_solid.Placement.Base = App.Vector(0, 0, 75)
+
+# Step 8: Use Boolean operation to unite the combined shape with the pyramid
+final_shape = combined_shape.fuse(pyramid_solid)
+
+# Step 9: Show the final shape
+Part.show(final_shape)

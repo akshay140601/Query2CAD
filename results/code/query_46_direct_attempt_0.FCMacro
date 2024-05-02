@@ -1,0 +1,32 @@
+import Part
+import Sketcher
+from FreeCAD import Base
+
+# Step 1: Create a new document in FreeCAD
+doc = App.newDocument()
+
+# Step 2: Sketch the overall shape of the rowing boat hull
+sketch = doc.addObject("Sketcher::SketchObject", "Sketch")
+sketch.addGeometry(Part.Circle(App.Vector(0, 0, 0), App.Vector(0, 0, 1), 500), False)  # Assuming a circular shape for simplicity
+doc.recompute()
+
+# Step 3: Add a flat section for seating on the top surface of the hull
+flat_section = Part.makeBox(2000, 200, 50)  # Assuming a flat section of 2000mm x 200mm x 50mm
+flat_section.Placement.Base = App.Vector(-1000, 0, 0)  # Placing the flat section on top of the hull
+doc.recompute()
+
+# Step 4: Extrude the sketch to create a 3D model of the boat hull
+boat_hull = sketch.extrude(App.Vector(0, 0, 1000))  # Extruding the sketch by 1000mm
+doc.recompute()
+
+# Step 5: Check the dimensions and proportions to ensure it is 2000mm in length
+# Assuming the total length of the boat hull is 2000mm
+
+# Step 6: Add any additional details or features such as oarlock mounts or a rudder
+# Adding oarlock mounts or a rudder can be done by creating additional sketches and extruding them
+
+# Step 7: Fine-tune the design as needed to achieve the desired look and functionality
+
+# Step 8: Save and export the CAD model of the rowing boat hull for further use or modifications
+Part.show(boat_hull)
+Part.show(flat_section)

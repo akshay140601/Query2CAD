@@ -1,0 +1,22 @@
+import Part
+
+# Step 1: Create a new document
+App.newDocument("BottleCap")
+App.setActiveDocument("BottleCap")
+App.ActiveDocument = App.getDocument("BottleCap")
+Gui.ActiveDocument = Gui.getDocument("BottleCap")
+
+# Step 2: Create a cylinder for the bottle cap
+cylinder = Part.makeCylinder(20, 10)
+
+# Step 3: Create a sphere for the top of the bottle cap
+sphere = Part.makeSphere(20)
+
+# Step 4: Combine the cylinder and sphere to form the bottle cap
+bottle_cap = cylinder.fuse(sphere)
+
+# Step 5: Show the completed bottle cap model
+Part.show(bottle_cap)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

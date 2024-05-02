@@ -1,0 +1,1 @@
+tetrahedron_solid = tetrahhedron_solid.makeFillet([0.1])  # Close the sides by adding fillets

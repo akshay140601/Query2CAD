@@ -1,0 +1,14 @@
+import Part
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Sketch a circle with a radius of 6 mm
+sketch = doc.addObject("Sketcher::SketchObject", "Sketch")
+sketch.addGeometry(Part.Circle(App.Vector(0, 0, 0), App.Vector(0, 0, 1), 6), False)
+
+# Step 3: Use the Pad function to extrude the circle to a thickness of 2 mm
+plate = Part.extrude(sketch, App.Vector(0, 0, 2))
+
+# Step 4: Write Part.show to see the plate generated
+Part.show(plate)

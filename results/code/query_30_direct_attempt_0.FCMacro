@@ -1,0 +1,16 @@
+import Part
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Make a cone with a base radius of 15mm and a height of 20mm
+cone_large = Part.makeCone(15, 0, 20)
+
+# Step 3: Create a smaller cone for the conical indentation
+cone_small = Part.makeCone(10, 0, 10)
+
+# Step 4: Cut out the smaller cone from the larger cone to create the hollow center
+cone_solid = cone_large.cut(cone_small)
+
+# Step 5: Show the generated part
+Part.show(cone_solid)

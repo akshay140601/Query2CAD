@@ -1,0 +1,27 @@
+import Part
+
+# Step 1: Create a new document
+App.newDocument("RectangularPlateWithHole")
+App.setActiveDocument("RectangularPlateWithHole")
+App.ActiveDocument = App.getDocument("RectangularPlateWithHole")
+Gui.ActiveDocument = Gui.getDocument("RectangularPlateWithHole")
+
+# Step 2: Create a rectangular plate
+plate = Part.makeBox(50, 30, 5)
+
+# Step 3: Create a sketch on the plate
+sketch = App.activeDocument().addObject('Sketcher::SketchObject','Sketch')
+sketch.MapMode = "FlatFace"
+sketch.addGeometry(Part.Circle(App.Vector(25, 15, 0), App.Vector(0, 0, 1), 10))
+
+# Step 4: Draw a circle for the hole
+circle = Part.makeCircle(10)
+
+# Step 5: Create a hole by extruding the circle through the plate
+hole = sketch.extrude(App.Vector(0,0,5))
+
+# Step 6: Show the final 3D model
+Part.show(hole)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

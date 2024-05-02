@@ -1,0 +1,22 @@
+import Part
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Create the first cylinder
+cylinder1 = Part.makeCylinder(15, 40)
+
+# Step 3: Rotate the first cylinder
+cylinder1.rotate(FreeCAD.Vector(0, 0, 0), FreeCAD.Vector(0, 1, 0), 90)
+
+# Step 4: Create the second cylinder
+cylinder2 = Part.makeCylinder(15, 40)
+
+# Step 5: Rotate the second cylinder
+cylinder2.rotate(FreeCAD.Vector(0, 0, 0), FreeCAD.Vector(1, 0, 0), 90)
+
+# Step 6: Intersect the two cylinders
+intersection = cylinder1.fuse(cylinder2)
+
+# Step 7: Show the intersecting cylinders
+Part.show(intersection)

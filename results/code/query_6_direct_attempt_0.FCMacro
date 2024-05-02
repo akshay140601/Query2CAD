@@ -1,0 +1,16 @@
+import Part
+
+# Step 1: Create a new document
+App.newDocument("RectangularBlock")
+App.setActiveDocument("RectangularBlock")
+App.ActiveDocument = App.getDocument("RectangularBlock")
+Gui.ActiveDocument = Gui.getDocument("RectangularBlock")
+
+# Step 2: Use the Part.makeBox function to create a rectangular block
+rectangular_block = Part.makeBox(40, 20, 10)
+
+# Step 3: Show the part generated
+Part.show(rectangular_block)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

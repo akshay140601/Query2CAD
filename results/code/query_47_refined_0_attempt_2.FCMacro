@@ -1,0 +1,30 @@
+import Part
+import math
+from FreeCAD import Base
+
+# Dimensions for the glasses
+lens_width = 50.0
+lens_height = 30.0
+arm_length = 150.0
+
+# Create the lens shapes
+lens1 = Part.Ellipse(lens_width, lens_height)
+lens2 = Part.Ellipse(lens_width, lens_height)
+
+# Translate the lenses to position them correctly
+lens1.translate(Base.Vector(-arm_length/2, 0, 0))
+lens2.translate(Base.Vector(arm_length/2, 0, 0))
+
+# Create the arms of the glasses
+arm1 = Part.makeBox(arm_length, 5, 5)
+arm2 = Part.makeBox(arm_length, 5, 5)
+
+# Translate the arms to position them correctly
+arm1.translate(Base.Vector(-arm_length/2, -lens_height/2, 0))
+arm2.translate(Base.Vector(arm_length/2, -lens_height/2, 0))
+
+# Combine all the shapes to create the glasses
+glasses = Part.makeCompound([lens1, lens2, arm1, arm2])
+
+# Show the glasses
+Part.show(glasses)

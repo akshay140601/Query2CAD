@@ -1,0 +1,31 @@
+import Part
+import math
+from FreeCAD import Base
+
+# Step 1: Create a new document
+App.newDocument("CubePyramid")
+App.setActiveDocument("CubePyramid")
+App.ActiveDocument = App.getDocument("CubePyramid")
+Gui.ActiveDocument = Gui.getDocument("CubePyramid")
+
+# Step 2: Create a cube with a base of 15mm
+cube = Part.makeBox(15, 15, 15)
+
+# Step 3: Create a pyramid on top of the cube with a height of 25mm
+pyramid_points = [Base.Vector(7.5, 7.5, 15), Base.Vector(0, 15, 40), Base.Vector(15, 15, 40)]
+pyramid_wire = Part.makePolygon(pyramid_points)
+pyramid_face = Part.Face(pyramid_wire)
+
+# Step 4: Ensure that the pyramid is centered on the top face of the cube
+cube_top_face_center = Base.Vector(7.5, 7.5, 15)
+pyramid_height = 25
+pyramid_center_offset = Base.Vector(0, 0, pyramid_height)
+pyramid_placement = cube_top_face_center - pyramid_center_offset
+pyramid_solid = pyramid_face.extrude(pyramid_placement)
+
+# Step 5: Show the combined model of the cube and pyramid
+combined_model = cube.fuse(pyramid_solid)
+Part.show(combined_model)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

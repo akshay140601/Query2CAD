@@ -1,0 +1,13 @@
+import Part
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Create a circular sketch with a radius of 6 mm
+circle = Part.makeCircle(6)
+
+# Step 3: Extrude the circle sketch to a thickness of 2 mm
+plate = circle.extrude(App.Vector(0, 0, -2))  # Changed the extrusion direction to -2 to create a plate
+
+# Step 4: Show the plate model
+Part.show(plate)

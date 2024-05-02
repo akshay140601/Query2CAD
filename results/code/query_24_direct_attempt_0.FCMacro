@@ -1,0 +1,19 @@
+import Part
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Create a cube of 20mm
+cube = Part.makeBox(20, 20, 20)
+
+# Step 3: Create a cylindrical hole with a radius of 5mm
+cylinder = Part.makeCylinder(5, 20)
+
+# Step 4: Position the cylindrical hole at the center of the top face of the cube
+cylinder.Placement.Base = App.Vector(10, 10, 20)
+
+# Step 5: Subtract the cylindrical hole from the cube
+final_part = cube.cut(cylinder)
+
+# Step 6: Show the final part
+Part.show(final_part)

@@ -1,0 +1,36 @@
+import Part
+import math
+from FreeCAD import Base
+
+# Step 1: Create a new document
+App.newDocument("Glasses")
+App.setActiveDocument("Glasses")
+App.ActiveDocument = App.getDocument("Glasses")
+Gui.ActiveDocument = Gui.getDocument("Glasses")
+
+# Step 2: Create the oval shape for the lens
+oval = Part.Ellipse()
+oval.Placement = Base.Placement(Base.Vector(0, 0, 0), Base.Rotation(Base.Vector(0, 0, 1), 0))
+oval = oval.toShape()
+oval_face = Part.Face(oval)
+
+# Step 3: Extrude the oval shape to create the lens
+lens = oval_face.extrude(Base.Vector(0, 0, 5))
+
+# Step 4: Duplicate the lens for the second lens
+lens2 = lens.copy()
+lens2.translate(Base.Vector(0, 80, 0))  # Position the second lens
+
+# Step 5: Create separate arms for the glasses
+arm1 = Part.makeBox(2, 2, 150)
+arm2 = arm1.copy()
+arm2.translate(Base.Vector(0, 30, 0))  # Position the second arm
+
+# Step 6: Assemble the lenses and arms
+glasses = lens.fuse(lens2).fuse(arm1).fuse(arm2)
+
+# Step 7: Show the final 3D model of the glasses
+Part.show(glasses)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

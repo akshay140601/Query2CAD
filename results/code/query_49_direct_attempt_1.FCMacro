@@ -1,0 +1,50 @@
+import Part
+import math
+from FreeCAD import Base
+
+# Step 1: Create a new document
+App.newDocument("Ladder")
+App.setActiveDocument("Ladder")
+App.ActiveDocument = App.getDocument("Ladder")
+Gui.ActiveDocument = Gui.getDocument("Ladder")
+
+# Step 2: Sketch the profile of a single step of the ladder
+step_width = 30.0
+step_depth = 10.0
+step_height = 2.0
+step_sketch = Part.makeBox(step_width, step_depth, step_height)
+
+# Step 3: Extrude the sketch to create a solid body for the step
+step_solid = Part.extrude(step_sketch, Base.Vector(0, 0, step_height))
+
+# Step 4: Create a circular pattern of the step to form the 20 steps of the ladder
+step_angle = 360 / 20
+step_list = []
+for i in range(20):
+    angle = math.radians(i * step_angle)
+    x = 50 * math.cos(angle)  # Radius of the circular pattern
+    y = 50 * math.sin(angle)
+    step_copy = step_solid.copy()
+    step_copy.translate(Base.Vector(x, y, i * step_height))
+    step_list.append(step_copy)
+
+# Step 5: Add side rails to the ladder by sketching and extruding rectangular profiles
+rail_width = 5.0
+rail_depth = 5.0
+rail_height = 40 * step_height  # Height of the ladder
+rail_sketch = Part.makeBox(rail_width, rail_depth, rail_height)
+rail_solid = Part.extrude(rail_sketch, Base.Vector(0, 0, rail_height))
+
+# Step 6: Connect the steps to the side rails to complete the ladder design
+ladder_parts = step_list + [rail_solid, rail_solid.copy().translate(Base.Vector(step_width, 0, 0))]
+
+# Step 7: Add any necessary details or features
+# No additional details added in this example
+
+# Step 8: Review the 3D model
+for part in ladder_parts:
+    Part.show(part)
+
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

@@ -1,0 +1,26 @@
+import Part
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Sketch a circle with outer radius 25mm and inner radius 15mm
+circle_outer = Part.makeCircle(25)
+circle_inner = Part.makeCircle(15)
+ring = circle_outer.cut(circle_inner)
+
+# Step 3: Use the Pocket tool to create the ring shape
+ring_shape = ring.extrude(App.Vector(0,0,10))
+
+# Step 4: Sketch a square with sides of 3mm
+square = Part.makeBox(3, 3, 10)
+
+# Step 5: Use the Pocket tool to create the first square hole on the ring
+ring_with_hole = ring_shape.cut(square)
+
+# Step 6: Use the Polar Pattern tool to evenly space and replicate the square hole three times around the ring
+ring_with_holes = ring_with_hole
+for i in range(3):
+    ring_with_holes = ring_with_holes.fuse(ring_with_hole.mirror(App.Vector(0, 0, 0), App.Vector(0, 0, 1)))
+
+# Step 7: Show the final part
+Part.show(ring_with_holes)

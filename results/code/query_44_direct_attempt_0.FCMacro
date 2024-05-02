@@ -1,0 +1,31 @@
+import Part
+import Sketcher
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Sketch a circle with a diameter of 50mm for the base of the bottle
+sketch = doc.addObject("Sketcher::SketchObject", "Sketch")
+sketch.addGeometry(Part.Circle(App.Vector(0, 0, 0), App.Vector(0, 0, 1), 25), False)
+doc.recompute()
+
+# Step 3: Extrude the circle to a height of 100mm to create the main body of the bottle
+wire = FreeCAD.ActiveDocument.Sketch.Shape.Wires[0]
+face = Part.Face(wire)
+bottle_body = face.extrude(FreeCAD.Vector(0, 0, 100))
+Part.show(bottle_body)
+
+# Step 4: Add details such as a neck and cap to the bottle
+neck = Part.makeCylinder(15, 10)
+neck.Placement.Base = App.Vector(0, 0, 100)
+Part.show(neck)
+
+cap = Part.makeCylinder(25, 5)
+cap.Placement.Base = App.Vector(0, 0, 150)
+Part.show(cap)
+
+# Step 5: Add any additional features or decorations to the bottle design
+
+# Step 6: Review the 3D model of the bottle and make any necessary adjustments
+
+# Step 7: Finalize the design and save the CAD model

@@ -1,0 +1,31 @@
+import Part
+import Sketcher
+
+# Step 1: Create a new document
+doc = App.newDocument()
+
+# Step 2: Sketch the profile of the street lamp pole
+sketch = doc.addObject("Sketcher::SketchObject", "Sketch")
+sketch.addGeometry(Part.Circle(App.Vector(0, 0, 0), App.Vector(0, 0, 1), 75), False)  # Diameter of 150mm
+doc.recompute()
+
+# Step 3: Extrude the sketch to create a solid body for the pole
+pole = Part.extrude(sketch, 3000)  # Extrude the sketch to create the pole
+
+# Step 4: Add details such as a lamp fixture at the top of the pole
+lamp_fixture = Part.makeCylinder(20, 50)  # Example lamp fixture dimensions
+lamp_fixture.translate(App.Vector(0, 0, 3000))  # Position the lamp fixture at the top of the pole
+pole = pole.fuse(lamp_fixture)
+
+# Step 5: Create a base for the street lamp pole to sit on
+base = Part.makeCylinder(100, 20)  # Example base dimensions
+
+# Step 6: Position the pole on the base and ensure stability
+pole.translate(App.Vector(0, 0, -20))  # Adjust position of the pole on the base
+
+# Step 7: Adjust the design as needed and add any additional details
+# Additional details can be added here
+
+# Step 8: Finalize the design and generate the 3D model
+street_lamp = base.fuse(pole)  # Combine the base and pole
+Part.show(street_lamp)  # Show the final street lamp model

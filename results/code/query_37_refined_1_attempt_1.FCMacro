@@ -1,0 +1,29 @@
+import Part
+from FreeCAD import Base
+
+# Create a new document
+App.newDocument("BentPipe")
+App.setActiveDocument("BentPipe")
+App.ActiveDocument = App.getDocument("BentPipe")
+Gui.ActiveDocument = Gui.getDocument("BentPipe")
+
+# Create the cylindrical pipe
+cylinder = Part.makeCylinder(15, 30)  # Inner diameter of 30mm
+
+# Create the torus for the bend
+torus = Part.makeTorus(25, 50)  # Outer diameter of 50mm
+
+# Fuse the cylindrical pipe and torus to create the bent pipe
+bent_pipe = cylinder.fuse(torus)
+
+# Create a perpendicular cylinder
+perpendicular_cylinder = Part.makeCylinder(15, 30)
+
+# Create a loft between the two cylinders
+pipe_loft = Part.makeLoft([cylinder, perpendicular_cylinder, 0])
+
+# Show the 3D model of the bent pipe with the perpendicular cylinder
+Part.show(pipe_loft)
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")

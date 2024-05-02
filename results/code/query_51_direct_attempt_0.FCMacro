@@ -1,0 +1,22 @@
+import Part
+import FreeCAD as App
+
+# Step 1: Create a new document
+App.newDocument("OfficeDesk")
+
+# Step 2: Create the office desk
+desk = Part.makeBox(1400, 700, 25)
+Part.show(desk)
+
+# Step 3: Create the three-drawer pedestal
+pedestal = Part.makeBox(400, 600, 700)
+Part.show(pedestal)
+
+# Step 4: Arrange the desk and pedestal
+pedestal.Placement.Base = App.Vector(1000, 0, 0)  # Adjust the position of the pedestal
+Part.show(pedestal)
+
+# Step 5: View the completed CAD design
+App.activeDocument().recompute()
+Gui.activeDocument().activeView().viewAxometric()
+Gui.SendMsgToActiveView("ViewFit")
