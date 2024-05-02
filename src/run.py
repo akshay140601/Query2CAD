@@ -100,8 +100,8 @@ if __name__ == "__main__":
     args.add_argument("--refine_iterations", type=int, default=3)
     args.add_argument("--code_gen_temperature", type=int, default=0.2)
     args.add_argument("--reasoning_temperature", type=int, default=0.8)
-    args.add_argument("--code_gen_api_key", type=str, default="fcb5dca384064dce53475051ef6c784761895841b000c09e5611b0344b5466c4")
-    args.add_argument("--reasoning_api_key", type=str, default="fcb5dca384064dce53475051ef6c784761895841b000c09e5611b0344b5466c4")
+    args.add_argument("--code_gen_api_key", type=str, default="")
+    args.add_argument("--reasoning_api_key", type=str, default="")
     args.add_argument("--mode", type=str, help="Inferencing on dataset or single inference (dataset or single)", default="dataset")
     args.add_argument("--vqa_model", type=str, default="clip-flant5-xl")
     args.add_argument("--vqa_threshold", type=float, help="Between 0 and 1", default=0.9)
@@ -109,7 +109,7 @@ if __name__ == "__main__":
 
     args = args.parse_args()
 
-    if args.code_gen_model != "codellama":
+    if args.code_gen_model == "chatgpt":
         load_dotenv()
         api_key = os.getenv("PROXY_API_KEY")
         base_url = os.getenv("PROXY_BASE_URL")
@@ -120,7 +120,7 @@ if __name__ == "__main__":
         args.code_gen_api_key = args.code_gen_api_key
         base_url = None
 
-    if args.reasoning_model != "codellama":
+    if args.reasoning_model == "chatgpt":
         load_dotenv()
         api_key = os.getenv("PROXY_API_KEY")
         base_url = os.getenv("PROXY_BASE_URL")
