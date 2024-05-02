@@ -1,11 +1,15 @@
-# 3D-Model-Generation-using-Natural-Language
+# Query2CAD
 
-## TODOs
-- [ ] Setup CodeLlama-70B. Preferrably in one AWS instance. (Setup through Ollama?). API calling is preferred.
-- [ ] Develop PyAutoGUI code. Minimum (None preferrably) mouse movements or relative position movements to increase generality.
-- [ ] Decide on a strong captioning model. Check its performance on random CAD models.
-- [ ] Sample 200-300 CAD images from the ABC dataset and manually annotate (image-caption pair dataset).
-- [ ] Finetune the captioning model with the sampled dataset.
-- [ ] Integrate code generation, PyAutoGUI, and captioning feedback.
-- [ ] Manual testing and refinement of prompts and hyperparameters.
-- [ ] Create a benchmark dataset and test the entire system.
+## How to run the system
+1. Download and setup the [FreeCAD](https://github.com/FreeCAD/FreeCAD) software. The system has been tested on Windows and Linux OS with a screen size of 1920x1080.
+2. Clone the repository.
+```
+git clone https://github.com/akshay140601/Query2CAD.git
+```
+
+3. Set up Together AI API to use Llama models or get the API key of OpenAI to use GPT models. Take a look at args in src/run.py for arguments that you can specify. Assuming the keys are already set, run the below command to run the system.
+```
+python src/run.py --code_gen_model codellama/chatgpt/llama3/gpt4-turbo --reasoning_model codellama/chatgpt/llama3/gpt4-turbo --human_feedback True
+```
+
+4. The results will be stored in the results/ folder and new queries can be added in data/queries.txt
