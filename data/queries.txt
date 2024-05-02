@@ -2,7 +2,7 @@ Cube with side dimension 10mm.
 Ball with radius of 75mm.
 Cone with base radius 10 mm and height 10 mm 
 Cylinder with base radius 10 mm and height 20 mm
-A plate which is circular in shape with radius 6 mm and thickness 2 mm
+A plate which is circular in shape with radius 6mm and height 2mm
 A pyramid with a square base of 20mm sides and height of 30mm.
 A rectangular block with dimensions 40mm by 20mm by 10mm.
 A hexagonal prism with a side length of 15mm and height of 30mm.
@@ -33,7 +33,7 @@ A combination of a cube and a pyramid, with a cube base of 15mm and a pyramid he
 A combined sphere and cube, with the sphere having a radius of 25mm and the cube having 50mm sides, fused at one face.
 A H-shaped beam with a height of 100mm, arm lengths of 50mm each, and a thickness of 10mm.
 A hexagonal nut with an outer diameter of 20mm and a height of 10mm, with a hexagonal through hole of 10mm.
-A rectangular block of 100mm by 50mm by 50mm with a separate cylindrical roller of 100mm length and 20mm diameter lying parallel on top.
+A rectangular block of 100mm by 50mm by 50nmm with a separate cylindrical roller of 100mm length and 20mm diameter lying parallel on top.
 A screw with a radius of 2mm and length of 10mm. 
 A 90-degree bent pipe with outer diameter of 50mm and inner diameter of 30mm.
 A solid shaft with diameter 80mm with a keyway slot
@@ -55,10 +55,3 @@ A street lamp with a pole height of 3000mm and a diameter of 150mm
 A teapot with a body diameter of 150mm and height of 100mm, accompanied by a separate lid with a diameter of 100mm.
 A football goal post with a width of 7300mm and a height of 2400mm.
 A bookshelf with five shelves, each 800mm long and 300mm deep
-A bucket along with a handle with an outer diameter of 500mm and inner diameter of 450mm.
-A fidget spinner with three arms.
-A screw with a radius of 2mm and length of 10mm with knurling.
-A detailed laptop consisting of a screen, keyboard, touchpad and hinges.
-A standard calculator.
-A gear with 24 teeth, an outer diameter of 60mm, and a central hole of 15mm diameter, each tooth having a height of 5mm.
-A triangular prism of side 25mm and height 30mm with a cylindrical cutout from one vertex to the opposite base edge.
